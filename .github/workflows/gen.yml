@@ -27,7 +27,7 @@ jobs:
           bash inst-gen.sh
       - name: Install dependencies
         run: |
-          echo "starting" &&  bash gen.sh 9 9 9 && git add -A
+          echo "starting" &&  git checkout -b branch_to_merge && bash gen.sh 9 9 9 && git add -A && git commit -m "automerge branch_to_merge" 
 
       - name: create pull request
         run: gh pr create -B pages -H branch_to_merge --label automerge --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
