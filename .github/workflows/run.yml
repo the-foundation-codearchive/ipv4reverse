@@ -46,9 +46,12 @@ jobs:
           git branch
           git pull --rebase  origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}  || ( git pull   origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --allow-unrelated-histories || git rebase --skip|| true ) 
           bash gen.sh 9 ${{ matrix.otwo }} ${{ matrix.othree }} || true 
-          git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}" && git push --set-upstream origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}
+          git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}" 
+          echo "none" > gitres
+          git push --set-upstream origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} &>gitres
+          grep "othing to commit" .gitres || true
       - name: create pull request
-        run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} into base_branch' --body 'Created by Github action'
+        run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} into base_branch' --body 'Created by Github action' || true 
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   merge:
