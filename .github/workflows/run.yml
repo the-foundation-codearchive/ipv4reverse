@@ -45,8 +45,8 @@ jobs:
           git checkout -b mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} pages
           git branch
           git pull --rebase  origin mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }}  || ( git pull   origin mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} --allow-unrelated-histories || git rebase --skip|| true ) 
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh > gen.sh
-          bash gen.sh 9 ${{ matrix.oone }} ${{ matrix.otwo }} || true 
+          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh
+          bash /tmp/gen.sh 9 ${{ matrix.oone }} ${{ matrix.otwo }} || true 
           git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }}" || true 
           echo "none" > gitres
           bash -c 'git push --set-upstream origin mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} &>gitres || true' || true 
