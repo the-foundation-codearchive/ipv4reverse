@@ -45,7 +45,7 @@ jobs:
           git checkout -b mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} pages
           git branch
           git pull origin mybranch_to_merge || true
-          bash gen.sh 9 ${{ matrix.otwo }} ${{ matrix.othree }}
+          bash gen.sh 9 ${{ matrix.otwo }} ${{ matrix.othree }} || true 
           git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}" && git push --set-upstream origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}
       - name: create pull request
         run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} into base_branch' --body 'Created by Github action'
