@@ -32,11 +32,29 @@ jobs:
       - name: PRE Pull Request autoclean
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
-          bash -c "git switch pages;git reset --soft $(git merge-base pages HEAD)";
+          git checkout pages
+          tar cvzf /tmp/keep.tgz $(ls -1 README.md index.html ;test -e lists && echo lists) || true
+          git switch --orphan pages
+          echo hi > .init-empty-file
+          test -e /tmp/keep.tgz && tar xvzf /tmp/keep.tgz
           find lists/ -empty -delete||true ;
-          git commit -m "one commit on yourBranch" || true ;
-          git add -A
-          git push --force || true 
+          git add -A|| true
+          git commit --allow-empty -m "init"
+          git push origin pages --force
+          #git checkout -b old_pages pages
+          #git branch -D pages
+          #git checkout --orphan pages
+          #git reset --hard
+          #git commit --allow-empty -m "Initial commit"
+          #git push origin pages:pages --force-with-lease
+          #git checkout old_pages
+          #git rebase origin/pages
+          #git push origin my-feature-1:my-feature-1 --force-with-lease
+
+          #bash -c "git switch pages;git reset --soft $(git merge-base pages HEAD)";
+          #git commit -m "one commit on yourBranch" || true ;
+          #git add -A
+          #git push --force || true 
       - name: DONE pre-clean
         run: echo DONE pre-clean
  
