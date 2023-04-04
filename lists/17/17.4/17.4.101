@@ -1,0 +1,4 @@
+1680585383|61.101.4.17.in-addr.arpa. 21600 IN PTR aws-brooklyn2-scheduler-usw2-cx01.apple.com.
+1680585383|61.101.4.17.in-addr.arpa. 21600 IN PTR aws-brooklyn2-workflow-usw2-cx01.apple.com.
+1680585383|61.101.4.17.in-addr.arpa. 21600 IN PTR aws-brooklyn2-sales-usw2-cx01.apple.com.
+1680585383|37.101.4.17.in-addr.arpa. 3600 IN PTR supportmetrics-usw2-stage.apple.com.
