@@ -10,5 +10,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: kenhowardpdx/auto-merge-action@v1
-        if: ${{ github.actor == 'dependabot[bot]' }}
+      - id: automerge
+        name: automerge
+        uses: "pascalgn/automerge-action@v0.15.6"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
