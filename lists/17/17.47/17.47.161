@@ -1,0 +1,7 @@
+1680589013|102.161.47.17.in-addr.arpa. 21600 IN PTR msc-rdm-prod.apple.com.
+1680589013|100.161.47.17.in-addr.arpa. 21600 IN PTR okapi-services-msc.apple.com.
+1680589013|105.161.47.17.in-addr.arpa. 300 IN PTR msc-nimbus-prod.apple.com.
+1680589013|109.161.47.17.in-addr.arpa. 21600 IN PTR manage-dr.apple.com.
+1680589013|108.161.47.17.in-addr.arpa. 300 IN PTR mesamysalescomp.apple.com.
+1680589013|107.161.47.17.in-addr.arpa. 300 IN PTR mesamysalescomp-external.apple.com.
+1680589013|103.161.47.17.in-addr.arpa. 43200 IN PTR skybox-msc.apple.com.

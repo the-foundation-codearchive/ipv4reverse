@@ -1,0 +1,14 @@
+1680599409|5.89.171.17.in-addr.arpa. 3600 IN PTR mdn-wmem.apple.com.
+1680599409|106.89.171.17.in-addr.arpa. 3600 IN PTR mysalescomp-external-stage.apple.com.
+1680599409|112.89.171.17.in-addr.arpa. 21600 IN PTR siriusplus-stage.apple.com.
+1680599409|108.89.171.17.in-addr.arpa. 43200 IN PTR ma-ds-cyc-external-uat.apple.com.
+1680599409|108.89.171.17.in-addr.arpa. 43200 IN PTR ds-cyc-extennal-uat.apple.com.
+1680599409|3.89.171.17.in-addr.arpa. 300 IN PTR partnerconnect-mdn.apple.com.
+1680599409|10.89.171.17.in-addr.arpa. 300 IN PTR b2bproxy-mdn-old.apple.com.
+1680599409|10.89.171.17.in-addr.arpa. 300 IN PTR partner-customer-mdn.apple.com.
+1680599409|100.89.171.17.in-addr.arpa. 300 IN PTR partnerconnect-ext-mdn.apple.com.
+1680599409|104.89.171.17.in-addr.arpa. 43200 IN PTR api-partner-connect-mdn-uat.apple.com.
+1680599409|110.89.171.17.in-addr.arpa. 21600 IN PTR ma-miadev-kube-stage.apple.com.
+1680599409|115.89.171.17.in-addr.arpa. 3600 IN PTR insight-status.apple.com.
+1680599409|111.89.171.17.in-addr.arpa. 43200 IN PTR siriusplus-dr.apple.com.
+1680599409|4.89.171.17.in-addr.arpa. 300 IN PTR suppliercare-mdn.apple.com.

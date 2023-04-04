@@ -1,0 +1,16 @@
+1680618558|12.123.1.40.in-addr.arpa. 600 IN PTR adc-snat02-vlan-1823.am.lilly.com.
+1680618558|16.123.1.40.in-addr.arpa. 600 IN PTR adc-snat06-vlan-1823.am.lilly.com.
+1680618558|14.123.1.40.in-addr.arpa. 600 IN PTR adc-snat04-vlan-1823.am.lilly.com.
+1680618558|254.123.1.40.in-addr.arpa. 600 IN PTR riv1823.am.lilly.com.
+1680618558|18.123.1.40.in-addr.arpa. 600 IN PTR adc-snat08-vlan-1823.am.lilly.com.
+1680618558|250.123.1.40.in-addr.arpa. 600 IN PTR r0141dcn85-vlan-1823.am.lilly.com.
+1680618558|248.123.1.40.in-addr.arpa. 600 IN PTR adc0141dc02v06-vlan-1823.am.lilly.com.
+1680618558|10.123.1.40.in-addr.arpa. 600 IN PTR adc-snat00-vlan-1823.am.lilly.com.
+1680618558|13.123.1.40.in-addr.arpa. 600 IN PTR adc-snat03-vlan-1823.am.lilly.com.
+1680618558|17.123.1.40.in-addr.arpa. 600 IN PTR adc-snat07-vlan-1823.am.lilly.com.
+1680618558|247.123.1.40.in-addr.arpa. 600 IN PTR adc0141dc01v06-vlan-1823.am.lilly.com.
+1680618558|253.123.1.40.in-addr.arpa. 600 IN PTR r0141dcee65-vlan-1823.am.lilly.com.
+1680618558|19.123.1.40.in-addr.arpa. 600 IN PTR adc-snat09-vlan-1823.am.lilly.com.
+1680618558|249.123.1.40.in-addr.arpa. 599 IN PTR riv1823-adc.am.lilly.com.
+1680618558|11.123.1.40.in-addr.arpa. 600 IN PTR adc-snat01-vlan-1823.am.lilly.com.
+1680618558|15.123.1.40.in-addr.arpa. 600 IN PTR adc-snat05-vlan-1823.am.lilly.com.
