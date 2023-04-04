@@ -9,9 +9,9 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 for octet_two in 0 $(seq 1 254);do 
 
 
+for octet_three in 0 $(seq 1 254);do 
 
 test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_one}/${octet_one}.${octet_two}
-for octet_three in 0 $(seq 1 254);do 
 python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
      echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
       head /tmp/req${octet_three}.${octet_two}.${octet_one} -n 2
