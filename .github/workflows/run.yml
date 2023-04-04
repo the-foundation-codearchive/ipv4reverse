@@ -38,8 +38,10 @@ jobs:
           echo hi > .init-empty-file
           test -e /tmp/keep.tgz && tar xvzf /tmp/keep.tgz
           find lists/ -empty -delete||true ;
-          git add -A|| true
+          git reset --hard
           git commit --allow-empty -m "init"
+          git add -A|| true
+          git commit -m "init"
           git push origin pages --force
           #git checkout -b old_pages pages
           #git branch -D pages
