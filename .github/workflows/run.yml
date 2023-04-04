@@ -144,6 +144,9 @@ jobs:
              ) & sleep 5
              bash -c 'sleep $(($RANDOM%10))'
           done
+          echo "all spawned"
+          wait
+          exit 0
 
       - name: create artifacts
         run: bash -c 'mkdir upload; cp $(find /tmp/ -maxdepth 1 -name "*.log") upload/'
