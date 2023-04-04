@@ -29,12 +29,14 @@ jobs:
         with:
           ref: 'pages'
           fetch-depth: '0'
-      - name: PRE Pull Request Automerge
+      - name: PRE Pull Request autoclean
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           bash -c "git switch pages;git reset --soft $(git merge-base pages HEAD)";
           find lists/ -empty -delete||true ;
-          git commit -m "one commit on yourBranch" || true ; git push --force || true 
+          git commit -m "one commit on yourBranch" || true ;
+          git add -A
+          git push --force || true 
       - name: DONE pre-clean
         run: echo DONE pre-clean
  
