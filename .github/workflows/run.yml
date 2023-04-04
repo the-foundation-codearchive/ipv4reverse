@@ -99,6 +99,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: 'pages'
+          fetch-depth: '0'
           
       - name: List Files
         run: |
@@ -115,6 +116,8 @@ jobs:
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           echo "starting... _${{ matrix.oone }}"
+          git branch -D mybranch_to_merge_${{ matrix.oone }} || true
+
           git checkout -b mybranch_to_merge_${{ matrix.oone }} pages
           git branch
           ((git pull --rebase  origin mybranch_to_merge_${{ matrix.oone }}  || git rebase --skip )|| ( git pull   origin mybranch_to_merge_${{ matrix.oone }} --allow-unrelated-histories || true ) )||true
