@@ -14,7 +14,11 @@ test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_o
 python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
      echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
       head /tmp/req${octet_three}.${octet_two}.${octet_one} -n 2
-     /tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
+#     /tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
+     /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one} --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} ;
+     rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
+     find lists -empty-delete
+     wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}
      cat /tmp/out${octet_three}.${octet_two}.${octet_one} |grep PTR|grep -v PTR$ |while read a ;do echo $(date +%s)"|$a" ;done  > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} ) &
 sleep 0.3
 
