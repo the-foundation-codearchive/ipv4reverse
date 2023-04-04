@@ -1,0 +1,8 @@
+1680592792|233.158.92.20.in-addr.arpa. 10 IN PTR smtp-lb-cn-2-east.pp.twsegcloud.com.
+1680592792|51.158.92.20.in-addr.arpa. 10 IN PTR console-2b.east.pp.twsegcloud.com.
+1680592792|50.158.92.20.in-addr.arpa. 10 IN PTR console-2a.east.pp.twsegcloud.com.
+1680592792|232.158.92.20.in-addr.arpa. 10 IN PTR smtp-lb-cn-1-east.pp.twsegcloud.com.
+1680592792|234.158.92.20.in-addr.arpa. 10 IN PTR smtp-lb-cn-3-east.pp.twsegcloud.com.
+1680592792|49.158.92.20.in-addr.arpa. 10 IN PTR console-1b.east.pp.twsegcloud.com.
+1680592792|48.158.92.20.in-addr.arpa. 10 IN PTR console-1a.east.pp.twsegcloud.com.
+1680592792|235.158.92.20.in-addr.arpa. 10 IN PTR smtp-lb-cn-4-east.pp.twsegcloud.com.

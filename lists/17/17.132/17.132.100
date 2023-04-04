@@ -1,0 +1,4 @@
+1680596167|2.100.132.17.in-addr.arpa. 43200 IN PTR hfd-policyp01-bl-ext.apple.com.
+1680596167|0.100.132.17.in-addr.arpa. 21600 IN PTR hfd-mx01.apple.com.
+1680596167|3.100.132.17.in-addr.arpa. 21600 IN PTR hfd-policyp02-bl-ext.apple.com.
+1680596167|1.100.132.17.in-addr.arpa. 43200 IN PTR hfd-mx02.apple.com.

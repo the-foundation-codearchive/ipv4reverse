@@ -1,0 +1,9 @@
+1680591389|2.249.75.20.in-addr.arpa. 10 IN PTR ib.qa.rhoneapp.com.
+1680591389|8.249.75.20.in-addr.arpa. 10 IN PTR ib.azr.rhoneapp.com.
+1680591389|4.249.75.20.in-addr.arpa. 10 IN PTR ib.stg.rhoneapp.com.
+1680591389|5.249.75.20.in-addr.arpa. 10 IN PTR ob.prod.rhoneapp.com.
+1680591389|3.249.75.20.in-addr.arpa. 10 IN PTR ob.stg.rhoneapp.com.
+1680591389|1.249.75.20.in-addr.arpa. 10 IN PTR ib.int.rhoneapp.com.
+1680591389|0.249.75.20.in-addr.arpa. 10 IN PTR ob.int-qa.rhoneapp.com.
+1680591389|10.249.75.20.in-addr.arpa. 10 IN PTR ib.train.rhoneapp.com.
+1680591389|6.249.75.20.in-addr.arpa. 10 IN PTR ib.prod.rhoneapp.com.

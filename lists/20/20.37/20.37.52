@@ -1,0 +1,4 @@
+1680588138|128.52.37.20.in-addr.arpa. 10 IN PTR vm-prod-all-proxy01-zac1-rgs.australiacentral.cloudapp.azure.com.
+1680588138|176.52.37.20.in-addr.arpa. 10 IN PTR vm-lab-all-proxy02-zac1-rgs.australiacentral.cloudapp.azure.com.
+1680588138|177.52.37.20.in-addr.arpa. 10 IN PTR vm-lab-all-proxy01-zac1-rgs.australiacentral.cloudapp.azure.com.
+1680588138|129.52.37.20.in-addr.arpa. 10 IN PTR vm-prod-all-proxy02-zac1-rgs.australiacentral.cloudapp.azure.com.
