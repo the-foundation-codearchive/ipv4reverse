@@ -15,7 +15,7 @@ jobs:
         with:
           ref: 'pages'
       - name: PRE Pull Request Automerge
-        run: echo "OPEN PR:" && gh pr list --limit 256 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 42 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;sleep 5;done
+        run: echo "OPEN PR:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;sleep 3;done
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DONE pre-merge
@@ -77,7 +77,7 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull Request Automerge
-        run: gh pr list && gh pr list --limit 100 |grep mybranch_to_merge|cut  -f1 | while read a ;do res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;echo "$res";echo "$res"|grep -i "rate limit" && (sleep 42 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;sleep 10;done
+        run: echo "OPEN PR:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;sleep 3;done
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #  merge:
