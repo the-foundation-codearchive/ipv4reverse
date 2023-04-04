@@ -1,6 +1,8 @@
 name: automerge
 on:
   pull_request:
+    branches:
+      - pages
     types:
       - labeled
       - unlabeled
@@ -26,7 +28,7 @@ jobs:
         uses: "pascalgn/automerge-action@v0.15.6"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          BASE_BRANCHES: "main,master"
+          BASE_BRANCHES: "main,master,pages"
           MERGE_LABELS: "automerge,!work in progress"
           MERGE_REMOVE_LABELS: "automerge"
           MERGE_METHOD: "squash"
