@@ -42,6 +42,10 @@ jobs:
     needs: generate
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          ref: 'pages'
       - name: Enable Pull Request Automerge
         run: gh pr merge --squash --auto "42"
         env:
