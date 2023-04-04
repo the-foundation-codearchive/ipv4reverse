@@ -2,6 +2,7 @@
 
 oone=$1
 myoct=$2
+source /dev/shm/.tokenv || true 
 echo "starting_${oone} ${myoct} .. "
 mkdir "/tmp/tmp_${myoct}"
 tar c . |(cd "/tmp/tmp_${myoct}"||exit ;tar xv|wc -l)
