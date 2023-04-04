@@ -122,6 +122,7 @@ jobs:
           for myoct in $(seq 1 255);do 
              (
              (bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)"| &>/tmp/run_${{ matrix.oone }}_$myoct.log )|| true
+             echo "done ${{ matrix.oone }} $myoct" >&2
              ) & sleep 123
              bash -c 'sleep $(($RANDOM%23))'
           done
