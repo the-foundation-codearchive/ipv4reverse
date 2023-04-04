@@ -123,7 +123,8 @@ jobs:
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           while(true);do sleep 30;echo -n "$(uptime) .. " ;ps -AcF |grep -e dns -e acth.sh|wc -l ;done &
           uptime
-          echo "export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >/dev/shm/.tokenv
+          echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
+          echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           for myoct in $(seq 1 255);do 
              (
              (bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
@@ -135,7 +136,8 @@ jobs:
           wait
           exit 0
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create artifacts
         if: always()
         run: bash -c 'mkdir upload; cp $(find /tmp/ -maxdepth 1 -name "*.log") upload/'

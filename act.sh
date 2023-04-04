@@ -44,6 +44,11 @@ bash -c 'grep "othing to commit" "/tmp/gitres_${myoct}.log "|| true' || true
 sleep 3;
 bash -c 'sleep $(($RANDOM%23))'
 echo -n "Pull Request_creating pull req:"
-gh pr create -B pages -H "rdns_automerge_${oone}_${myoct}" --label automerge --title "Merge rdns_automerge_${oone}_${myoct} into base_branch" --body-file /"tmp/pullreq_${myoct}.md" || true 
-echo Pull Request Automerge && echo "OPEN PReqs:" && gh pr list --limit 333  && gh pr list --limit 333 |grep rdns_automerge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+export GITHUB_TOKEN=$PULLREQ_TOKEN
+prcreateres=$((gh pr create -B pages -H "rdns_automerge_${oone}_${myoct}" --label automerge --title "Merge rdns_automerge_${oone}_${myoct} into base_branch" --body-file /"tmp/pullreq_${myoct}.md" || true )
+echo "$prcreateres"|grep -i "rate limit" && echo "$prcreateres" && sleep 120 && prcreateres=$((gh pr create -B pages -H "rdns_automerge_${oone}_${myoct}" --label automerge --title "Merge rdns_automerge_${oone}_${myoct} into base_branch" --body-file /"tmp/pullreq_${myoct}.md" || true )
+echo "$prcreateres"
+bash -c 'sleep $(($RANDOM%23))'
+export GITHUB_TOKEN=$MERGERS_TOKEN
+echo Pull Request Automerge && echo "OPEN PReqs:" && gh pr list --limit 33  && gh pr list --limit 333 |grep rdns_automerge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
 exit 0
