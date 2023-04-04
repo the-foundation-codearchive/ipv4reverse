@@ -20,7 +20,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DONE pre-merge
         run: echo DONE pre-merge
-  generate-1:
+  generate:
     needs: premerge
     runs-on: ubuntu-latest
     strategy:
@@ -85,7 +85,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete workflow runs
-        needs: generate
         uses: Mattraks/delete-workflow-runs@main
         with:
           token: ${{ github.token }}
