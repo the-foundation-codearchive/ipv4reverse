@@ -5,9 +5,12 @@ on:
   pull_request:
     branches:
       - pages
+  pull_request_target:
+    branches:
+      - pages
 
 jobs:  
-  test:
+  merge:
     runs-on: ubuntu-latest
     steps:
       - id: automerge
