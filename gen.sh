@@ -21,7 +21,9 @@ python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match
      rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
      find lists -empty -delete
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}
-     cat /tmp/out${octet_three}.${octet_two}.${octet_one} |grep PTR|grep -v PTR$ |while read a ;do echo $(date +%s)"|$a" ;done  > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} ) &
+     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && ( cat /tmp/out${octet_three}.${octet_two}.${octet_one} |grep PTR|grep -v PTR$ |while read a ;do echo $(date +%s)"|$a" ;done  > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
+      ) &   
+      
 sleep 0.3
 
 done
