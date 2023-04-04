@@ -28,7 +28,7 @@ jobs:
           octet_three=9
           test -e lists/$octet_one || mkdir lists/$octet_one
           test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir lists/${octet_one}/${octet_one}.${octet_two}
-          time (echo {0..254}.{octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'|/tmp/dns -r /tmp/resolvers -t PTR -|grep PTR|grep -v PTR$ > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three})
+          time (echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'|/tmp/dns -r /tmp/resolvers -t PTR -|grep PTR|grep -v PTR$ > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three})
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
