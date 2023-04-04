@@ -23,11 +23,11 @@ jobs:
       - name: generate
         run: |
           echo "starting"
-          test -e lists || mkdir lists
-          octet_one=9
-          octet_two=9
-          octet_three=9
-          bash gen.sh $octet_one $octet_two $octet_three
+
+          #octet_one=9
+          #octet_two=9
+          #octet_three=9
+          bash gen.sh 9 9 9 
       - name: create pull request
         run: gh pr create -B pages -H branch_to_merge --label automerge --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
         env:
