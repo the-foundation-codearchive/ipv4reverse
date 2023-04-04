@@ -16,7 +16,8 @@ python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match
      echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
       head /tmp/req${octet_three}.${octet_two}.${octet_one} -n 2
 #     /tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
-     /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one} --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} ;
+     /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one} --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
+     test -e /tmp/log${octet_three}.${octet_two}.${octet_one} && (grep -e SERVFAIL -e NXDOMAIN -e OK /tmp/log${octet_three}.${octet_two}.${octet_one}  ; rm /tmp/log${octet_three}.${octet_two}.${octet_one}  ) 
      rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
      find lists -empty-delete
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}
