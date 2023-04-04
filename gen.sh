@@ -8,6 +8,7 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 )
 #for octet_two in 0 $(seq 1 254);do 
 #octet_two
+echo "running FOR ${octet_one}/${octet_one}"
 for octet_three in 0 $(seq 1 254);do 
 
 test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_one}/${octet_one}.${octet_two}
@@ -18,7 +19,7 @@ python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match
      /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one} --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} ;
      rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
      find lists -empty-delete
-     wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}
+     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}
      cat /tmp/out${octet_three}.${octet_two}.${octet_one} |grep PTR|grep -v PTR$ |while read a ;do echo $(date +%s)"|$a" ;done  > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} ) &
 sleep 0.3
 
