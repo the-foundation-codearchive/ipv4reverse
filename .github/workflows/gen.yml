@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
+        ref: 'pages'
 #      - name: Set up Python 3.8
 #        uses: actions/setup-python@v2
 #        with:
@@ -29,13 +30,9 @@ jobs:
           test -e lists/$octet_one || mkdir lists/$octet_one
           test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir lists/${octet_one}/${octet_one}.${octet_two}
           time (echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'|/tmp/dns -r /tmp/resolvers -t PTR -|grep PTR|grep -v PTR$ > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three})
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          commit-message: add stuff
-          title: add rdns
-          body: rdns - Update available list
-          base: main
-          labels: automated-pr, automerge
+      - name: create pull request
+        run: gh pr create -B pages -H branch_to_merge --label automerge --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          branch: cloud-update-advanced-params
           delete-branch: true
