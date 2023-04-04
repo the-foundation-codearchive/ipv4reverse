@@ -117,20 +117,20 @@ jobs:
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           echo "starting... _${{ matrix.oone }}"
           git branch -D mybranch_to_merge_${{ matrix.oone }} || true
-
           git checkout -b mybranch_to_merge_${{ matrix.oone }} pages
           git branch
           ((git pull --rebase  origin mybranch_to_merge_${{ matrix.oone }}  || git rebase --skip )|| ( git pull   origin mybranch_to_merge_${{ matrix.oone }} --allow-unrelated-histories || true ) )||true
           find lists/ -empty -delete
           curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh
-          bash /tmp/gen.sh  ${{ matrix.oone }} ${{ steps.step1.outputs.otwo }} || true 
-          git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.oone }}" || true 
+          ( bash /tmp/gen.sh  ${{ matrix.oone }} ${{ steps.step1.outputs.otwo }} || true ) 2>&1|tee /tmp/gen.log|grep -i -e fail -e error 
+          ( git add -A 2&>&1 && git commit -m "automerge mybranch_to_merge_${{ matrix.oone }}" 2&>&1  || true ) | tee /tmp/git.log
           echo "none" > /tmp/gitres
-          bash -c 'git push --set-upstream origin mybranch_to_merge_${{ matrix.oone }} &>/tmp/gitres || true' || true 
-          bash -c 'grep "othing to commit" /tmp/gitres || true' || true 
+          bash -c 'git push --set-upstream origin mybranch_to_merge_${{ matrix.oone }} &>/tmp/gitres.log || true' || true 
+          bash -c 'grep "othing to commit" /tmp/gitres.log || true' || true 
+          (echo "# Auto merge from actions";echo;echo;echo "## git results";echo;echo '```';wc -l /tmp/git.log /tmp/gitres.log;cat /tmp/git.log /tmp/gitres.log;echo '```';echo "## generator results";echo;echo '```';wc -l /tmp/gen.log;cat /tmp/gen.log|grep -e OK -e NXDOMAIN -e REFUSE -e ERR -e SERVFAIL ;echo '```') > /tmp/pullreq.md
           exit 0
       - name: create pull request
-        run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.oone }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.oone }} into base_branch' --body 'Created by Github action' || true 
+        run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.oone }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.oone }} into base_branch' --body-file /tmp/pullreq.md || true 
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull Request Automerge
