@@ -1,8 +1,11 @@
 name: GEN
 on:
+  push:
+    branches:
+      - 'master'
+      - 'main'
   schedule:
-    - cron: "0 6 * * 2"
-    - push
+    - cron: '0 0 1 * *'
 jobs:
   CloudList:
     runs-on: ubuntu-latest
