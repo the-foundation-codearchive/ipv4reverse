@@ -19,10 +19,11 @@ jobs:
         with:
           ref: 'pages'
           fetch-depth: '0'
-      - name: PRE Pull Request Automerge
-        run: echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+      - name: INIT Request Automerge
+        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DONE pre-merge
         run: echo DONE pre-merge
   preclean:
@@ -157,9 +158,10 @@ jobs:
 #            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Request Automerge
-        run: echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   cleanruns:
     needs: generate
     runs-on: ubuntu-latest
@@ -180,10 +182,11 @@ jobs:
         with:
           ref: 'pages'
           fetch-depth: '0'
-      - name: Enable Pull Request Automerge
-        run: echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+      - name: FINAL Request Automerge
+        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   archive:
     needs: merge
     runs-on: ubuntu-latest
