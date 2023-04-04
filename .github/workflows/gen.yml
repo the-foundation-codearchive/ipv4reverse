@@ -15,7 +15,9 @@ jobs:
         with:
           ref: 'pages'
           
-        
+      - name: List Files
+        run: |
+          find -type f      
 #      - name: Set up Python 3.8
 #        uses: actions/setup-python@v2
 #        with:
