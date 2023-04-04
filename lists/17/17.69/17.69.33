@@ -1,0 +1,13 @@
+1680590827|126.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-3pclient-vpn.euro.apple.com.
+1680590827|66.33.69.17.in-addr.arpa. 3600 IN PTR nlams2-extranet-gw1-v666-hsrp.euro.apple.com.
+1680590827|65.33.69.17.in-addr.arpa. 43200 IN PTR nlams2-extranet-gw-v666-hsrp.euro.apple.com.
+1680590827|72.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-corpclient-vpn4.euro.apple.com.
+1680590827|72.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-corpclient-vpn.euro.apple.com.
+1680590827|69.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-corpclient-vpn1.euro.apple.com.
+1680590827|69.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-corpclient-vpn.euro.apple.com.
+1680590827|70.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-corpclient-vpn2.euro.apple.com.
+1680590827|70.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-corpclient-vpn.euro.apple.com.
+1680590827|68.33.69.17.in-addr.arpa. 43200 IN PTR ivpn-nlams2.euro.apple.com.
+1680590827|71.33.69.17.in-addr.arpa. 43200 IN PTR nlams2-corpclient-vpn.euro.apple.com.
+1680590827|71.33.69.17.in-addr.arpa. 43200 IN PTR nlams2-corpclient-vpn3.euro.apple.com.
+1680590827|67.33.69.17.in-addr.arpa. 21600 IN PTR nlams2-extranet-gw2-v666-hsrp.euro.apple.com.
