@@ -14,15 +14,16 @@ for octet_three in 0 $(seq 1 254);do
 test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_one}/${octet_one}.${octet_two}
 python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
      echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
-      
+      mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
 #     /tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
-     /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one} --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
+     /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one}/res --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
+     
+     test -e /tmp/out${octet_three}.${octet_two}.${octet_one}/ && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}/*
      test -e /tmp/log${octet_three}.${octet_two}.${octet_one} && (head /tmp/req${octet_three}.${octet_two}.${octet_one} -n 1;grep -e SERVFAIL -e NXDOMAIN -e OK /tmp/log${octet_three}.${octet_two}.${octet_one}  ; rm /tmp/log${octet_three}.${octet_two}.${octet_one}  ) 
      test -e /tmp/req${octet_three}.${octet_two}.${octet_one} && rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
      find lists -empty -delete
-     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}
-     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && ( cat /tmp/out${octet_three}.${octet_two}.${octet_one} |grep PTR|grep -v PTR$ |while read a ;do echo $(date +%s)"|$a" ;done  > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
-     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && rm /tmp/out${octet_three}.${octet_two}.${octet_one}
+     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && ( cat /tmp/out${octet_three}.${octet_two}.${octet_one}/* |grep PTR|grep -v PTR$ |while read a ;do echo $(date +%s)"|$a" ;done  > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
+     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) &   
 
 sleep 0.3
