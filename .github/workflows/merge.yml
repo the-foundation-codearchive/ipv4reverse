@@ -1,8 +1,8 @@
 name: Enable Auto Merge
 on:
   pull_request:
-    branches:
-      - pages
+#    branches:
+#      - pages
 
 jobs:
   auto-merge:
