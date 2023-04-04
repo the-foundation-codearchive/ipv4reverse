@@ -50,6 +50,7 @@ jobs:
           echo "none" > gitres
           git push --set-upstream origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} &>gitres || true
           grep "othing to commit" .gitres || true
+          exit 0
       - name: create pull request
         run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} into base_branch' --body 'Created by Github action' || true 
         env:
