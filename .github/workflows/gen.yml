@@ -32,7 +32,8 @@ jobs:
           git checkout -b mybranch_to_merge
           git branch
           git pull origin mybranch_to_merge || true
-          bash gen.sh 9 9 9 && git add -A && git commit -m "automerge mybranch_to_merge" && git push --set-upstream origin mybranch_to_merge
+          bash gen.sh 9 9 9
+          git add -A && git commit -m "automerge mybranch_to_merge" && git push --set-upstream origin mybranch_to_merge
 
 
       - name: create pull request

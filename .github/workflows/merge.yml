@@ -1,13 +1,16 @@
 
 name: Auto merge labeled
 
-on:
 
-  pull_request:
+on:
+  pull_request_target:
     branches:
       - pages
-    types:
-      - labeled
+#  pull_request:
+#    branches:
+#      - pages
+#    types:
+#      - labeled
 #      - unlabeled
 #      - synchronize
 #      - opened
