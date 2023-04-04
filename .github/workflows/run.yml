@@ -129,7 +129,7 @@ jobs:
               git checkout -b rdns_automerge_${{ matrix.oone }}_${myoct} pages
               git branch
               test -e /tmp/gen_$myoct.log && rm /tmp/gen_$myoct.log
-              ($(date);echo "STARTING FOR ${{ matrix.oone }} $myoct" )> /tmp/gen_$myoct.log
+              (echo $(date)" STARTING FOR ${{ matrix.oone }} $myoct" )> /tmp/gen_$myoct.log
               ( bash /tmp/gen.sh  ${{ matrix.oone }} $myoct || true ) 2>&1|tee -a /tmp/gen_$myoct.log)
               ( git add -A 2&>&1 && git commit -m "automerge rdns_automerge_${{ matrix.oone }}_${myoct}" 2>&1  || true ) | tee /tmp/git_$myoct.log|grep -i -e ^done -e "|OK" -e fail -e error 
               echo "none" > /tmp/gitres_$myoct.log
