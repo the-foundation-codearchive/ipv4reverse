@@ -20,8 +20,22 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DONE pre-merge
         run: echo DONE pre-merge
-  generate:
+  preclean:
     needs: premerge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          ref: 'pages'
+          fetch-depth: '0'
+      - name: PRE Pull Request Automerge
+        run: bash -c "git switch pages;git reset --soft $(git merge-base main HEAD)";find lists/ -empty -delete||true ;git commit -m "one commit on yourBranch"
+      - name: DONE pre-clean
+        run: echo DONE pre-clean
+ 
+  generate:
+    needs: preclean
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
