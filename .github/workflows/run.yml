@@ -35,6 +35,8 @@ jobs:
           git checkout pages
           tar czf /tmp/keep.tgz $(ls -1 README.md index.html ;test -e lists && echo lists) || true
           echo "prune pages (temp)"
+                    echo hi > .init-empty-file
+          git checkout -b tmp-pages pages
           git branch -D pages
           echo orphan
           git switch --orphan pages
