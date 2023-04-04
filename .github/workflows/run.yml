@@ -38,14 +38,16 @@ jobs:
           git branch -D pages
           echo orphan
           git switch --orphan pages
-          echo hi > .init-empty-file
-          test -e /tmp/keep.tgz && tar xzf /tmp/keep.tgz || true 
-          find lists/ -empty -delete||true ;
+
           echo reset
           git reset --hard
           echo emptycommit
           git commit --allow-empty -m "init"
+
           echo add
+          echo hi > .init-empty-file
+          test -e /tmp/keep.tgz && tar xzf /tmp/keep.tgz || true 
+          find lists/ -empty -delete||true ;
           git add -A|| true
           echo commit
           git commit -m "init"
