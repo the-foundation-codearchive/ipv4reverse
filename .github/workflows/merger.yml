@@ -3,8 +3,8 @@ name: Enable Auto Merging
 on:  
 #  push:
   pull_request:
-    branches:
-      - pages
+#    branches:
+#      - pages
   pull_request_target:
     branches:
       - pages
