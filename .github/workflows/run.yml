@@ -23,6 +23,7 @@ jobs:
         run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
             MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DONE pre-merge
         run: echo DONE pre-merge
@@ -138,7 +139,8 @@ jobs:
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
-            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create artifacts
         if: always()
         run: bash -c 'mkdir upload; cp $(find /tmp/ -maxdepth 1 -name "*.log") upload/'
@@ -161,7 +163,10 @@ jobs:
         run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
             MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
   cleanruns:
     needs: generate
     runs-on: ubuntu-latest
@@ -186,6 +191,7 @@ jobs:
         run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            #MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
             MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   archive:
     needs: merge
