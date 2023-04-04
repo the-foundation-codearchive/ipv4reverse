@@ -1,0 +1,48 @@
+name: GEN
+on:
+  push:
+    branches:
+      - 'master'
+      - 'main'
+  schedule:
+    - cron: '0 0 1 * *'
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          ref: 'pages'
+          
+      - name: List Files
+        run: |
+          find -type f      
+#      - name: Set up Python 3.8
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: "3.8"
+      - name: Install dependencies
+        run: |
+          bash inst-gen.sh
+      - name: Run thingy
+        run: |
+          git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+          echo "starting..."
+          git checkout -b mybranch_to_merge pages
+          git branch
+          git pull origin mybranch_to_merge || true
+          bash gen.sh 9 9 9
+          git add -A && git commit -m "automerge mybranch_to_merge" && git push --set-upstream origin mybranch_to_merge
+      - name: create pull request
+        run: gh pr create -B pages -H mybranch_to_merge --label automerge --title 'Merge mybranch_to_merge into base_branch' --body 'Created by Github action'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  merge:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable Pull Request Automerge
+        run: gh pr merge --squash --auto "42"
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
