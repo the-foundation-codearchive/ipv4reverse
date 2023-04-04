@@ -12,8 +12,8 @@ jobs:
     strategy:
       max-parallel: 20
       matrix:
-        otwo: [3,9]
-        othree: [8,9]
+        oone: [1,2,3,4,5,6,7,8]
+        otwo: [1,2]
         #arch: [linux_SLASH_amd64]
         #include:
         #  - os: alpine
@@ -41,18 +41,18 @@ jobs:
       - name: Run thingy... 
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
-          echo "starting... _${{ matrix.otwo }}_${{ matrix.othree }}"
-          git checkout -b mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} pages
+          echo "starting... _${{ matrix.oone }}_${{ matrix.otwo }}"
+          git checkout -b mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} pages
           git branch
-          git pull --rebase  origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}  || ( git pull   origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --allow-unrelated-histories || git rebase --skip|| true ) 
-          bash gen.sh 9 ${{ matrix.otwo }} ${{ matrix.othree }} || true 
-          git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}" || true 
+          git pull --rebase  origin mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }}  || ( git pull   origin mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} --allow-unrelated-histories || git rebase --skip|| true ) 
+          bash gen.sh 9 ${{ matrix.oone }} ${{ matrix.otwo }} || true 
+          git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }}" || true 
           echo "none" > gitres
-          bash -c 'git push --set-upstream origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} &>gitres || true' || true 
+          bash -c 'git push --set-upstream origin mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} &>gitres || true' || true 
           bash -c 'grep "othing to commit" .gitres || true' || true 
           exit 0
       - name: create pull request
-        run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} into base_branch' --body 'Created by Github action' || true 
+        run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.oone }}_${{ matrix.otwo }} into base_branch' --body 'Created by Github action' || true 
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   merge:
