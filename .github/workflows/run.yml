@@ -129,10 +129,19 @@ jobs:
           bash -c 'grep "othing to commit" /tmp/gitres.log || true' || true 
           (echo "# Auto merge from actions";echo;echo;echo "## git results";echo;echo '```';wc -l /tmp/git.log /tmp/gitres.log;cat /tmp/git.log /tmp/gitres.log;echo '```';echo "## generator results";echo;echo '```';wc -l /tmp/gen.log;cat /tmp/gen.log|grep -e OK -e NXDOMAIN -e REFUSE -e ERR -e SERVFAIL ;echo '```') > /tmp/pullreq.md
           exit 0
+      - name: create artifacts
+        run: bash -c 'mkdir upload; cp $(find /tmp/ -maxdepth 1 -name "*.log") upload/'
+      - name: push artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact-log-${{ matrix.oone }}
+          path: upload/*log
+          if-no-files-found: ignore 
       - name: create pull request
         run: gh pr create -B pages -H rdns_automerge_${{ matrix.oone }} --label automerge --title 'Merge rdns_automerge_${{ matrix.oone }} into base_branch' --body-file /tmp/pullreq.md || true 
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Pull Request Automerge
         run: echo "OPEN PR:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
