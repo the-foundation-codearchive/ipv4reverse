@@ -2,9 +2,7 @@
 name: Auto merge labeled
 
 on:
-  workflow_run:
-    types:
-      - completed
+
   pull_request:
     branches:
       - pages
