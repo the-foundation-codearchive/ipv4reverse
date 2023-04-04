@@ -8,7 +8,6 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 )
 for octet_two in 0 $(seq 1 254);do 
 
-
 for octet_three in 0 $(seq 1 254);do 
 
 test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_one}/${octet_one}.${octet_two}
