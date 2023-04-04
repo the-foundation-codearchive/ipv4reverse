@@ -12,7 +12,7 @@ jobs:
     strategy:
       max-parallel: 20
       matrix:
-        otwo: [9]
+        otwo: [3,9]
         othree: [8,9]
         #arch: [linux_SLASH_amd64]
         #include:
