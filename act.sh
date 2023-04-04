@@ -17,7 +17,7 @@ git branch
 test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log"
 
 (echo -n "$(date) ";echo " STARTING FOR ${oone} ${myoct}" )> "/tmp/gen_${myoct}.log"
-
+find lists /-mindepth 1 -delete
 ( ( bash /tmp/gen.sh  "${oone}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log")
 
 ( git add -A 2>&1 || true; 
