@@ -8,7 +8,6 @@ on:
     - cron: '0 0 1 * *'
 jobs:
   premerge:
-    needs: generate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
@@ -16,12 +15,13 @@ jobs:
         with:
           ref: 'pages'
       - name: PRE Pull Request Automerge
-        run: gh pr list && gh pr list --limit 100 |grep mybranch_to_merge|cut  -f1 | while read a ;do gh pr merge --delete-branch --squash --auto "$a";sleep 10;done
+        run: gh pr list && gh pr list --limit 100 |grep mybranch_to_merge|cut  -f1 | while read a ;do res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;echo "$res";echo "$res"|grep -i "rate limit" && (sleep 42 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;sleep 10;done
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DONE pre-merge
         run: echo DONE pre-merge
   generate-1:
+    needs: premerge
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -77,7 +77,7 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull Request Automerge
-        run: gh pr list && gh pr list --limit 100 |grep mybranch_to_merge|cut  -f1 | while read a ;do res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;echo "$res"|grep -i "rate limit" && sleep 42;sleep 10;done
+        run: gh pr list && gh pr list --limit 100 |grep mybranch_to_merge|cut  -f1 | while read a ;do res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;echo "$res";echo "$res"|grep -i "rate limit" && (sleep 42 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 ) ;sleep 10;done
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #  merge:
