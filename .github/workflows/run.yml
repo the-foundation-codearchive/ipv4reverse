@@ -47,6 +47,6 @@ jobs:
         with:
           ref: 'pages'
       - name: Enable Pull Request Automerge
-        run: gh pr merge --squash --auto "42"
+        run: gh pr list && gh pr merge --squash --auto "pages"
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
