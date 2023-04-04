@@ -22,7 +22,7 @@ python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match
      test -e /tmp/log${octet_three}.${octet_two}.${octet_one} && (grep -e SERVFAIL -e REFUSE -e NXDOMAIN -e OK /tmp/log${octet_three}.${octet_two}.${octet_one}|sed 's/^/ip4_'${octet_one}.${octet_two}.${octet_three}'| /g'  ; rm /tmp/log${octet_three}.${octet_two}.${octet_one}  ) 
      test -e /tmp/req${octet_three}.${octet_two}.${octet_one} && rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
      find lists -empty -delete
-     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && ( 
+     test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && (ls -1 /tmp/out${octet_three}.${octet_two}.${octet_one}/|grep out -q ) && ( 
           cat /tmp/out${octet_three}.${octet_two}.${octet_one}/* 2>/dev/null |grep PTR|grep -v PTR$ |(grep -v ^$|while read a ;do 
                    echo $(date +%s)"|$a" ;done ) > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
