@@ -12,15 +12,15 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 echo "running FOR ${octet_one}/${octet_two}"
 for octet_three in 0 $(seq 1 254);do 
 
-[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]  && echo "throttle  FOR ${octet_one}/${octet_two}"
-[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]  && sleep 5
+[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]   && echo "throttle  FOR ${octet_one}/${octet_two}"
+[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]   && sleep 5
 [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]  && sleep 10
 [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]  && sleep 15
 
 test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_one}/${octet_one}.${octet_two}
-python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
-     echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
-      mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
+python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
+     echo  {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
+     mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
 #     /tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
      /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one}/res --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}/ && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}/*
@@ -28,8 +28,9 @@ python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match
      test -e /tmp/req${octet_three}.${octet_two}.${octet_one} && rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
      find lists -empty -delete
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && (ls -1 /tmp/out${octet_three}.${octet_two}.${octet_one}/|grep out -q ) && ( 
-          cat /tmp/out${octet_three}.${octet_two}.${octet_one}/* 2>/dev/null |grep PTR|grep -v PTR$ |(grep -v ^$|while read a ;do 
-                   echo $(date +%s)"|$a" ;done ) > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
+         cat /tmp/out${octet_three}.${octet_two}.${octet_one}/* 2>/dev/null |grep PTR|grep -v PTR$ |(grep -v ^$|while read a ;do 
+                       echo $(date +%s)"|$a" ;done ) > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
+
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) &   
 
