@@ -122,9 +122,9 @@ jobs:
           curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh
           bash /tmp/gen.sh  ${{ matrix.oone }} ${{ steps.step1.outputs.otwo }} || true 
           git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.oone }}" || true 
-          echo "none" > gitres
-          bash -c 'git push --set-upstream origin mybranch_to_merge_${{ matrix.oone }} &>gitres || true' || true 
-          bash -c 'grep "othing to commit" .gitres || true' || true 
+          echo "none" > /tmp/gitres
+          bash -c 'git push --set-upstream origin mybranch_to_merge_${{ matrix.oone }} &>/tmp/gitres || true' || true 
+          bash -c 'grep "othing to commit" /tmp/gitres || true' || true 
           exit 0
       - name: create pull request
         run: gh pr create -B pages -H mybranch_to_merge_${{ matrix.oone }} --label automerge --title 'Merge mybranch_to_merge_${{ matrix.oone }} into base_branch' --body 'Created by Github action' || true 
@@ -168,7 +168,7 @@ jobs:
           ref: 'pages'
           fetch-depth: '0'
       - name: Archive new files
-      - name: Run thingy... 
+      - name: archive step
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           echo "generating archive"
