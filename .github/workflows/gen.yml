@@ -27,9 +27,7 @@ jobs:
           octet_one=9
           octet_two=9
           octet_three=9
-          test -e lists/$octet_one || mkdir lists/$octet_one
-          test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir lists/${octet_one}/${octet_one}.${octet_two}
-          time (echo {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'|/tmp/dns -r /tmp/resolvers -t PTR -|grep PTR|grep -v PTR$ > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three})
+          bash gen.sh $octet_one $octet_two $octet_three
       - name: create pull request
         run: gh pr create -B pages -H branch_to_merge --label automerge --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
         env:
