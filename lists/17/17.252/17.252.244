@@ -1,0 +1,4 @@
+1680606183|27.244.252.17.in-addr.arpa. 3600 IN PTR sy-waldo-old.apple.com.
+1680606183|252.244.252.17.in-addr.arpa. 3600 IN PTR sy-waldo-qa.apple.com.
+1680606183|253.244.252.17.in-addr.arpa. 3600 IN PTR sy-waldo-stg.apple.com.
+1680606183|254.244.252.17.in-addr.arpa. 3600 IN PTR sy-waldo.apple.com.

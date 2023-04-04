@@ -1,0 +1,14 @@
+1680590826|70.32.69.17.in-addr.arpa. 60 IN PTR stk-asa-vpn.euro.apple.com.
+1680590826|70.32.69.17.in-addr.arpa. 60 IN PTR uklon5-corpclient-vpn.euro.apple.com.
+1680590826|70.32.69.17.in-addr.arpa. 60 IN PTR uklon5-corpclient-vpn2.euro.apple.com.
+1680590826|69.32.69.17.in-addr.arpa. 60 IN PTR stk-asa-vpn.euro.apple.com.
+1680590826|69.32.69.17.in-addr.arpa. 60 IN PTR uklon5-corpclient-vpn.euro.apple.com.
+1680590826|69.32.69.17.in-addr.arpa. 60 IN PTR uklon5-corpclient-vpn1.euro.apple.com.
+1680590826|67.32.69.17.in-addr.arpa. 21600 IN PTR uklon5-extranet-gw2-v666-hsrp.euro.apple.com.
+1680590826|71.32.69.17.in-addr.arpa. 60 IN PTR stk-asa-vpn.euro.apple.com.
+1680590826|71.32.69.17.in-addr.arpa. 60 IN PTR uklon5-corpclient-vpn3.euro.apple.com.
+1680590826|65.32.69.17.in-addr.arpa. 21600 IN PTR uklon5-extranet-gw-v666-hsrp.euro.apple.com.
+1680590826|68.32.69.17.in-addr.arpa. 43200 IN PTR ivpn-uklon5.euro.apple.com.
+1680590826|72.32.69.17.in-addr.arpa. 60 IN PTR uklon5-corpclient-vpn4.euro.apple.com.
+1680590826|72.32.69.17.in-addr.arpa. 60 IN PTR stk-asa-vpn.euro.apple.com.
+1680590826|66.32.69.17.in-addr.arpa. 3600 IN PTR uklon5-extranet-gw1-v666-hsrp.euro.apple.com.
