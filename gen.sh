@@ -19,7 +19,7 @@ python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match
      /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one} --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
      test -e /tmp/log${octet_three}.${octet_two}.${octet_one} && (grep -e SERVFAIL -e NXDOMAIN -e OK /tmp/log${octet_three}.${octet_two}.${octet_one}  ; rm /tmp/log${octet_three}.${octet_two}.${octet_one}  ) 
      rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
-     find lists -empty-delete
+     find lists -empty -delete
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one} && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}
      cat /tmp/out${octet_three}.${octet_two}.${octet_one} |grep PTR|grep -v PTR$ |while read a ;do echo $(date +%s)"|$a" ;done  > lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} ) &
 sleep 0.3
