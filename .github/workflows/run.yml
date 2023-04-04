@@ -65,6 +65,6 @@ jobs:
         with:
           ref: 'pages'
       - name: Enable Pull Request Automerge
-        run: gh pr list && gh pr list |cut  -f1 | while read a ;do gh pr merge --delete-branch --squash --auto "$a";done
+        run: gh pr list && gh pr list |cut  -f1 | while read a ;do gh pr merge --delete-branch --squash --auto "$a";sleep 10;done
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
