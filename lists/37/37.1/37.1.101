@@ -1,0 +1,13 @@
+1680617817|110.101.1.37.in-addr.arpa. 3600 IN PTR outside.gd-hex-vpn1.greend.nsdsl.net.
+1680617818|130.101.1.37.in-addr.arpa. 3600 IN PTR docker-cam1.netservers.net.uk.
+1680617818|106.101.1.37.in-addr.arpa. 3600 IN PTR outside.gd-cam-vpn1.greend.nsdsl.net.
+1680617818|178.101.1.37.in-addr.arpa. 3600 IN PTR v3021.l3sw-cam2.netservers.net.uk.
+1680617818|132.101.1.37.in-addr.arpa. 3600 IN PTR docker-cam3.netservers.net.uk.
+1680617818|162.101.1.37.in-addr.arpa. 3600 IN PTR v3003.l3sw-the2.netservers.net.uk.
+1680617818|131.101.1.37.in-addr.arpa. 3600 IN PTR docker-cam2.netservers.net.uk.
+1680617818|177.101.1.37.in-addr.arpa. 3600 IN PTR v3021.l3sw-cam1.netservers.net.uk.
+1680617818|179.101.1.37.in-addr.arpa. 3600 IN PTR v3021.resolv-cam1.netservers.net.uk.
+1680617818|105.101.1.37.in-addr.arpa. 3600 IN PTR ge1011.l3sw-cam2.netservers.net.uk.
+1680617818|163.101.1.37.in-addr.arpa. 3600 IN PTR v3003.resolv-the1.netservers.net.uk.
+1680617818|161.101.1.37.in-addr.arpa. 3600 IN PTR v3003.l3sw-the1.netservers.net.uk.
+1680617818|65.101.1.37.in-addr.arpa. 3600 IN PTR gw-37-1-101-64.netservers.net.uk.
