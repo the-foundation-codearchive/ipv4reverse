@@ -1,0 +1,13 @@
+1680621112|190.108.1.103.in-addr.arpa. 604800 IN PTR fw01.corp01.nsw.simtronic.net.au.
+1680621112|44.108.1.103.in-addr.arpa. 21600 IN PTR sw01.pen01.nsw.simtronic.net.au.
+1680621112|42.108.1.103.in-addr.arpa. 21600 IN PTR sw01.pen01.nsw.simtronic.net.au.
+1680621112|40.108.1.103.in-addr.arpa. 21600 IN PTR sw01.pen01.nsw.simtronic.net.au.
+1680621112|50.108.1.103.in-addr.arpa. 604800 IN PTR myspam01.pen01.nsw.simtronic.net.au.
+1680621112|200.108.1.103.in-addr.arpa. 604800 IN PTR dc01.corp01.nsw.simtronic.net.au.
+1680621112|41.108.1.103.in-addr.arpa. 21600 IN PTR bdr01-eth4-v110.syd01.nsw.simtronic.net.au.
+1680621112|45.108.1.103.in-addr.arpa. 21600 IN PTR sw03.pen01.nsw.simtronic.net.au.
+1680621112|43.108.1.103.in-addr.arpa. 21600 IN PTR sw02.pen01.nsw.simtronic.net.au.
+1680621112|201.108.1.103.in-addr.arpa. 21600 IN PTR ex01.corp01.nsw.simtronic.net.au.
+1680621112|51.108.1.103.in-addr.arpa. 3600 IN PTR mx01.pen01.nsw.myspam.com.au.
+1680621112|189.108.1.103.in-addr.arpa. 3600 IN PTR bdr01-eth0-v115.syd01.nsw.simtronic.net.au.
+1680621112|193.108.1.103.in-addr.arpa. 604800 IN PTR gw01.corp01.nsw.simtronic.net.au.
