@@ -44,7 +44,7 @@ jobs:
           echo "starting... _${{ matrix.otwo }}_${{ matrix.othree }}"
           git checkout -b mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} pages
           git branch
-          git pull --rebase  origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}  || ( git pull   origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --allow-unrelated-histories || true ) 
+          git pull --rebase  origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}  || ( git pull   origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} --allow-unrelated-histories || git rebase --skip|| true ) 
           bash gen.sh 9 ${{ matrix.otwo }} ${{ matrix.othree }} || true 
           git add -A && git commit -m "automerge mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}" && git push --set-upstream origin mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }}
       - name: create pull request
