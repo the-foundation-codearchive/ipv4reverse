@@ -16,7 +16,7 @@ jobs:
           ref: 'pages'
           fetch-depth: '0'
       - name: PRE Pull Request Automerge
-        run: echo "OPEN PR:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+        run: echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: DONE pre-merge
@@ -112,25 +112,40 @@ jobs:
         run: |
           curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh
           bash /tmp/inst-gen.sh
+          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh
       - name: Run thingy... 
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
-          echo "starting... _${{ matrix.oone }}"
-          git branch -D rdns_automerge_${{ matrix.oone }} || true
-          git checkout -b rdns_automerge_${{ matrix.oone }} pages
-          git branch
-          ((git pull --rebase  origin rdns_automerge_${{ matrix.oone }}  || git rebase --skip )|| ( git pull   origin rdns_automerge_${{ matrix.oone }} --allow-unrelated-histories || true ) )||true
-          find lists/ -empty -delete
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh
-          test -e /tmp/gen.log && rm /tmp/gen.log
-          ($(date);echo "STARTING FOR ${{ matrix.oone }}" )> /tmp/gen.log
-          ( bash -c 'for myoct in 0 $(seq 1 255);do ( bash /tmp/gen.sh  ${{ matrix.oone }} $myoct || true ) 2>&1|tee -a /tmp/gen.log);echo "done $myoct" ;done'|grep -i -e ^done -e "|OK" -e fail -e error 
-          ( git add -A 2&>&1 && git commit -m "automerge rdns_automerge_${{ matrix.oone }}" 2>&1  || true ) | tee /tmp/git.log
-          echo "none" > /tmp/gitres
-          bash -c 'git push --set-upstream origin rdns_automerge_${{ matrix.oone }} &>/tmp/gitres.log || true' || true 
-          bash -c 'grep "othing to commit" /tmp/gitres.log || true' || true 
-          (echo "# Auto merge from actions";echo;echo;echo "## git results";echo;echo '```';wc -l /tmp/git.log /tmp/gitres.log;cat /tmp/git.log /tmp/gitres.log;echo '```';echo "## generator results";echo;echo '```';wc -l /tmp/gen.log;cat /tmp/gen.log|grep -e OK -e NXDOMAIN -e REFUSE -e ERR -e SERVFAIL ;echo '```') > /tmp/pullreq.md
-          exit 0
+          for myoct in $(seq 1 255);do 
+             (
+              echo "starting_${{ matrix.oone }} $myoct .. "
+              mkdir /tmp/$myoct
+              tar c . |(cd /tmp/$myoct ;tar xv|wc -l)
+              test -e /tmp/$myoct/.git || exit 1
+              cd /tmp/$myoct
+              pwd
+              echo "GIT ACTIONS_${{ matrix.oone }} $myoct"
+              git branch -D rdns_automerge_${{ matrix.oone }}_${myoct} || true
+              git checkout -b rdns_automerge_${{ matrix.oone }}_${myoct} pages
+              git branch
+              test -e /tmp/gen_$myoct.log && rm /tmp/gen_$myoct.log
+              ($(date);echo "STARTING FOR ${{ matrix.oone }} $myoct" )> /tmp/gen_$myoct.log
+              ( bash /tmp/gen.sh  ${{ matrix.oone }} $myoct || true ) 2>&1|tee -a /tmp/gen_$myoct.log)
+              ( git add -A 2&>&1 && git commit -m "automerge rdns_automerge_${{ matrix.oone }}_${myoct}" 2>&1  || true ) | tee /tmp/git_$myoct.log|grep -i -e ^done -e "|OK" -e fail -e error 
+              echo "none" > /tmp/gitres_$myoct.log
+              ( bash -c "git push --set-upstream origin rdns_automerge_${{ matrix.oone }}_${myoct} &>/tmp/gitres_$myoct.log || true" || true ) 
+              bash -c 'grep "othing to commit" /tmp/gitres_$myoct.log || true' || true 
+              (echo "# Auto merge from actions";echo;echo "generated_UTC: "$(date -u +%s);echo "generated_TIME: "$(date -u );echo ;echo;echo "## git results";echo;echo '```';wc -l /tmp/git_$myoct.log /tmp/gitres_$myoct.log;cat /tmp/git_$myoct.log /tmp/gitres_$myoct.log;echo '```';echo "## generator results";echo;echo '```';wc -l /tmp/gen_$myoct.log;cat /tmp/gen_$myoct.log|grep -e OK -e NXDOMAIN -e REFUSE -e ERR -e SERVFAIL ;echo '```') > /tmp/pullreq.md
+              sleep 3;
+              bash -c 'sleep $(($RANDOM%23))'
+              gh pr create -B pages -H rdns_automerge_${{ matrix.oone }}_${myoct} --label automerge --title 'Merge rdns_automerge_${{ matrix.oone }}_${myoct} into base_branch' --body-file /tmp/pullreq.md || true 
+              echo Pull Request Automerge
+              echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep rdns_automerge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+              exit 0
+             ) & sleep 5
+             bash -c 'sleep $(($RANDOM%10))'
+          done
+
       - name: create artifacts
         run: bash -c 'mkdir upload; cp $(find /tmp/ -maxdepth 1 -name "*.log") upload/'
       - name: push artifacts
@@ -139,13 +154,13 @@ jobs:
           name: artifact-log-${{ matrix.oone }}
           path: upload/*log
           if-no-files-found: ignore 
-      - name: create pull request
-        run: gh pr create -B pages -H rdns_automerge_${{ matrix.oone }} --label automerge --title 'Merge rdns_automerge_${{ matrix.oone }} into base_branch' --body-file /tmp/pullreq.md || true 
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: create pull request
+#        run: gh pr create -B pages -H rdns_automerge_${{ matrix.oone }}_${myoct} --label automerge --title 'Merge rdns_automerge_${{ matrix.oone }}_${myoct} into base_branch' --body-file /tmp/pullreq.md || true 
+#        env:
+#            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Request Automerge
-        run: echo "OPEN PR:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+        run: echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   cleanruns:
@@ -169,7 +184,7 @@ jobs:
           ref: 'pages'
           fetch-depth: '0'
       - name: Enable Pull Request Automerge
-        run: echo "OPEN PR:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+        run: echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   archive:
