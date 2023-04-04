@@ -41,8 +41,8 @@ jobs:
       - name: Run thingy
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
-          echo "starting... "
-          git checkout -b mybranch_to_merge pages
+          echo "starting... _${{ matrix.otwo }}_${{ matrix.othree }}"
+          git checkout -b mybranch_to_merge_${{ matrix.otwo }}_${{ matrix.othree }} pages
           git branch
           git pull origin mybranch_to_merge || true
           bash gen.sh 9 ${{ matrix.otwo }} ${{ matrix.othree }}
