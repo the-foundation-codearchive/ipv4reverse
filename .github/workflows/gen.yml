@@ -40,7 +40,6 @@ jobs:
         run: gh pr create -B pages -H mybranch_to_merge --label automerge --title 'Merge mybranch_to_merge into base_branch' --body 'Created by Github action'
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-jobs:
   merge:
     needs: generate
     runs-on: ubuntu-latest
