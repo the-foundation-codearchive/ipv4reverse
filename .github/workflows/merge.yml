@@ -1,4 +1,4 @@
-name: Enable Auto Merge
+name: Enable Auto Merging
 on:
   pull_request:
 #    branches:
