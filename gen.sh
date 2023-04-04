@@ -9,8 +9,13 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 )
 #for octet_two in 0 $(seq 1 254);do 
 #octet_two
-echo "running FOR ${octet_one}/${octet_one}"
+echo "running FOR ${octet_one}/${octet_two}"
 for octet_three in 0 $(seq 1 254);do 
+
+[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]  && echo "throttle  FOR ${octet_one}/${octet_two}"
+[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]  && sleep 5
+[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]  && sleep 10
+[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]  && sleep 15
 
 test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_one}/${octet_one}.${octet_two}
 python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
@@ -30,6 +35,7 @@ python3  /tmp/.privnet.py ${octet_one}.${octet_two}.${octet_three}.1 |grep Match
 
 sleep 4.2
 sleep 0.$(($RANDOM%9))
+
 
 done
 uptime
