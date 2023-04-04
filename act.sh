@@ -10,8 +10,9 @@ test -e "/tmp/tmp_${myoct}/.git" || exit 1
 cd "/tmp/tmp_${myoct}"|| exit 1
 pwd
 echo "GIT ACTIONS_${oone} ${myoct}"
-git branch -D "rdns_automerge_${oone}_${myoct}" || true
+#git branch -D "rdns_automerge_${oone}_${myoct}" || true
 git checkout -b "rdns_automerge_${oone}_${myoct}" pages
+git pull origin "rdns_automerge_${oone}_${myoct}" --allow-unrelated-histories
 git branch
 test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log"
 
