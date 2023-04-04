@@ -141,7 +141,6 @@ jobs:
         run: bash -c 'mkdir upload; cp $(find /tmp/ -maxdepth 1 -name "*.log") upload/'
       - name: push artifacts
         if: always()
-      - name: push artifacts
         uses: actions/upload-artifact@v3
         with:
           name: artifact-log-${{ matrix.oone }}
