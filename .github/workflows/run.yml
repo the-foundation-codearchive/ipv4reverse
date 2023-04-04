@@ -109,10 +109,10 @@ jobs:
 #          python-version: "3.8"
       - name: Install dependencies
         run: |
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh
-          bash /tmp/inst-gen.sh
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh
+          (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
+          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
+          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          wait
 
       - name: Run thingy... 
         run: |
