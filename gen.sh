@@ -29,5 +29,5 @@ sleep 0.3
 
 done
 wait
-find lists
+find lists -type f -exec wc -l {} \;
 #done
