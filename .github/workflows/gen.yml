@@ -32,7 +32,6 @@ jobs:
           git checkout -b branch_to_merge
           git branch
           git pull origin branch_to_merge || true
-
           bash gen.sh 9 9 9 && git add -A && git commit -m "automerge branch_to_merge" && git push --set-upstream origin branch_to_merge
 
 
