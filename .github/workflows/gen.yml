@@ -7,12 +7,15 @@ on:
   schedule:
     - cron: '0 0 1 * *'
 jobs:
-  CloudList:
+  generate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
-        ref: 'pages'
+        with:
+          ref: 'pages'
+          
+        
 #      - name: Set up Python 3.8
 #        uses: actions/setup-python@v2
 #        with:
@@ -20,17 +23,11 @@ jobs:
       - name: Install dependencies
         run: |
           bash inst-gen.sh
-      - name: generate
+      - name: Install dependencies
         run: |
-          echo "starting"
-          bash gen.sh 9 9 9 
+          echo "starting" &&  bash gen.sh 9 9 9
 
-          #octet_one=9
-          #octet_two=9
-          #octet_three=9
       - name: create pull request
         run: gh pr create -B pages -H branch_to_merge --label automerge --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          branch: cloud-update-advanced-params
-          delete-branch: true
