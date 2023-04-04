@@ -122,7 +122,9 @@ jobs:
           ((git pull --rebase  origin rdns_automerge_${{ matrix.oone }}  || git rebase --skip )|| ( git pull   origin rdns_automerge_${{ matrix.oone }} --allow-unrelated-histories || true ) )||true
           find lists/ -empty -delete
           curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh
-          ( bash /tmp/gen.sh  ${{ matrix.oone }} ${{ steps.step1.outputs.otwo }} || true ) 2>&1|tee /tmp/gen.log|grep -i -e "|OK" -e fail -e error 
+          test -e /tmp/gen.log && rm /tmp/gen.log
+          ($(date);echo "STARTING FOR ${{ matrix.oone }}" )> /tmp/gen.log
+          ( bash -c 'for myoct in 0 $(seq 1 255);do ( bash /tmp/gen.sh  ${{ matrix.oone }} $myoct || true ) 2>&1|tee -a /tmp/gen.log);echo "done $myoct" ;done'|grep -i -e ^done -e "|OK" -e fail -e error 
           ( git add -A 2&>&1 && git commit -m "automerge rdns_automerge_${{ matrix.oone }}" 2>&1  || true ) | tee /tmp/git.log
           echo "none" > /tmp/gitres
           bash -c 'git push --set-upstream origin rdns_automerge_${{ matrix.oone }} &>/tmp/gitres.log || true' || true 
