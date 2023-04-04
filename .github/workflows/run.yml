@@ -30,7 +30,7 @@ jobs:
           ref: 'pages'
           fetch-depth: '0'
       - name: PRE Pull Request Automerge
-        run: bash -c "git switch pages;git reset --soft $(git merge-base main HEAD)";find lists/ -empty -delete||true ;git commit -m "one commit on yourBranch"
+        run: bash -c "git switch pages;git reset --soft $(git merge-base main HEAD)";find lists/ -empty -delete||true ;git commit -m "one commit on yourBranch" || true ; git push --force || true 
       - name: DONE pre-clean
         run: echo DONE pre-clean
  
