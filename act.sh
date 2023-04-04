@@ -39,10 +39,11 @@ bash -c 'grep "othing to commit" "/tmp/gitres_${myoct}.log "|| true' || true
      wc -l "/tmp/gen_${myoct}.log";
      grep -e OK -e NXDOMAIN -e REFUSE -e ERR -e SERVFAIL  "/tmp/gen_${myoct}.log" ;
   echo '```';echo
-  ) > /tmp/pullreq.md
+  ) > "/tmp/pullreq_${myoct}.md"
 sleep 3;
 bash -c 'sleep $(($RANDOM%23))'
-gh pr create -B pages -H "rdns_automerge_${oone}_${myoct}" --label automerge --title "Merge rdns_automerge_${oone}_${myoct} into base_branch" --body-file /tmp/pullreq.md || true 
+echo -n "creating pull req:"
+gh pr create -B pages -H "rdns_automerge_${oone}_${myoct}" --label automerge --title "Merge rdns_automerge_${oone}_${myoct} into base_branch" --body-file /"tmp/pullreq_${myoct}.md" || true 
 echo Pull Request Automerge
 echo "OPEN PReqs:" && gh pr list --limit 333  && gh pr list --limit 333 |grep rdns_automerge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
 exit 0
