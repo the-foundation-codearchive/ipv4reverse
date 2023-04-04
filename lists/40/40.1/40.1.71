@@ -1,0 +1,17 @@
+1680618545|12.71.1.40.in-addr.arpa. 599 IN PTR snat-pool-l3-mh1-3.am.lilly.com.
+1680618545|120.71.1.40.in-addr.arpa. 600 IN PTR adcmh2mfg04-1840-self-ip.am.lilly.com.
+1680618545|14.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-5.am.lilly.com.
+1680618545|16.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-7.am.lilly.com.
+1680618545|18.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-9.am.lilly.com.
+1680618545|10.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-1.am.lilly.com.
+1680618545|126.71.1.40.in-addr.arpa. 600 IN PTR riv1840.am.lilly.com.
+1680618545|122.71.1.40.in-addr.arpa. 599 IN PTR r0141dcdd50mfga-vlan-1840.am.lilly.com.
+1680618545|13.71.1.40.in-addr.arpa. 599 IN PTR snat-pool-l3-mh1-4.am.lilly.com.
+1680618545|11.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-2.am.lilly.com.
+1680618545|121.71.1.40.in-addr.arpa. 600 IN PTR riv1840-adc-floating-ip.am.lilly.com.
+1680618545|129.71.1.40.in-addr.arpa. 600 IN PTR mh1-mfg-ad-lb.am.lilly.com.
+1680618545|19.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-10.am.lilly.com.
+1680618545|17.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-8.am.lilly.com.
+1680618545|119.71.1.40.in-addr.arpa. 600 IN PTR adcmh2mfg03-1840-self-ip.am.lilly.com.
+1680618545|15.71.1.40.in-addr.arpa. 600 IN PTR snat-pool-l3-mh1-6.am.lilly.com.
+1680618545|125.71.1.40.in-addr.arpa. 600 IN PTR r0141dcc125mfga-vlan-1840.am.lilly.com.
