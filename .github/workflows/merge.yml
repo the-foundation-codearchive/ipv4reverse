@@ -1,7 +1,7 @@
 name: Enable Auto Merging
 
 on:  
-  push:
+#  push:
   pull_request:
     branches:
       - pages
