@@ -9,6 +9,19 @@ on:
 jobs:
   generate:
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 20
+      matrix:
+        otwo: [8,9]
+        othree: [8,9]
+        #arch: [linux_SLASH_amd64]
+        #include:
+        #  - os: alpine
+        #    arch: linux_SLASH_386
+        #  - os: alpine
+        #    arch: linux_SLASH_arm_SLASH_v6
+        #  - os: ubuntu-bionic
+        #    arch: linux_SLASH_386
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
@@ -32,7 +45,7 @@ jobs:
           git checkout -b mybranch_to_merge pages
           git branch
           git pull origin mybranch_to_merge || true
-          bash gen.sh 9 9 9
+          bash gen.sh 9  ${{ matrix.otwo }}  ${{ matrix.othree }}
           git add -A && git commit -m "automerge mybranch_to_merge" && git push --set-upstream origin mybranch_to_merge
       - name: create pull request
         run: gh pr create -B pages -H mybranch_to_merge --label automerge --title 'Merge mybranch_to_merge into base_branch' --body 'Created by Github action'
