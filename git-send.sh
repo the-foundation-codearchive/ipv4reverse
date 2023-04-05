@@ -24,9 +24,9 @@ bash -c 'grep "othing to commit" "/tmp/gitres_${oone}.log "|| true' || true
 sleep 3;
 
 while (   curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/check/github-pull-request"|grep LOCKED -q);do 
+  echo "WATING FOR GITHUB API to create a PR"
   sleep $(curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/waittime/github-pull-request")
   bash -c 'sleep $(($RANDOM%23))'
-  echo "WATING FOR GITHUB API to create a PR"
 done
 echo -n "Pull Request_creating pull req:"
 
@@ -46,7 +46,7 @@ gh pr list --limit 33 |grep rdns_automerge|cut  -f1 | while read a ;do
     echo "CLOSING $a";
     bash -c 'sleep $(($RANDOM%23))'
     while (   curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/check/github-pull-merge"|grep LOCKED -q);do 
-      echo "WATING FOR GITHUB API to merge PRs"
+      echo "WATING FOR GITHUB API to merge Pull Requests"
       sleep $(curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/waittime/github-pull-merge")
       bash -c 'sleep $(($RANDOM%23))'
     done
