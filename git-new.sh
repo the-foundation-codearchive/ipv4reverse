@@ -9,6 +9,9 @@ test -e "/tmp/tmp_${oone}/.git" || exit 1
 cd "/tmp/tmp_${oone}"|| exit 1
 pwd
 echo "GIT ACTIONS_${oone} ${myoct}"
+#remote branch del
+git push origin --delete "rdns_automerge_${oone}" || true
+#local branch del
 #git branch -D "rdns_automerge_${oone}" || true
 git checkout -b "rdns_automerge_${oone}" pages
 git pull origin "rdns_automerge_${oone}" --allow-unrelated-histories

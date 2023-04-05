@@ -4,11 +4,11 @@ oone=$1
 source /dev/shm/.tokenv || true 
 echo "git_send_${oone}  "
 ( git add -A 2>&1 || true; 
-  git commit -m "automerge rdns_automerge_${oone}" 2>&1  || true ) | tee "/tmp/git_${oone}.log"|grep -i -e ^done -e "|OK" -e fail -e error 
+  git commit -m "automerge rdns_automerge_${oone}" 2>&1  || true ) | tee -a "/tmp/gitres_${oone}.log"|grep -i -e ^done -e "|OK" -e fail -e error 
 
 echo "none" > "/tmp/gitres_${oone}.log"
-( bash -c "git push --set-upstream origin rdns_automerge_${oone} &>/tmp/gitres_${oone}.log || true" || true ) 
-grep "othing to commit" "/tmp/gitres_${oone}.log "|| true
+( bash -c "git push --set-upstream origin rdns_automerge_${oone} | tee -a /tmp/gitres_${oone}.log || true" || true ) 
+grep "othing to commit" "/tmp/gitres_${oone}.log " 2>/dev/null|| true
 (
   echo "# Auto merge from actions";echo;
   echo -n "## generated_UTC: ";date -u +%s;

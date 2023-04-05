@@ -140,7 +140,7 @@ jobs:
              echo "done ${{ matrix.oone }} $myoct" >&2
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
-             ) & sleep 3
+             ) & sleep 0.5
              bash -c 'sleep $(($RANDOM%5))'
           done
           echo "all spawned"
