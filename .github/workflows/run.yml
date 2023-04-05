@@ -108,7 +108,7 @@ jobs:
           
       - name: List Files
         run: |
-          find -type f      
+          find -type f |wc -l  
 #      - name: Set up Python 3.8
 #        uses: actions/setup-python@v2
 #        with:
@@ -118,6 +118,8 @@ jobs:
           (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
           curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
           curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
+          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           wait
 
       - name: Run thingy... 
@@ -127,6 +129,13 @@ jobs:
           uptime
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
+
+          
+          
+          bash git-new ${{ matrix.oone }}
+          cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           for myoct in $(seq 1 255);do 
              (
              (bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
@@ -136,6 +145,7 @@ jobs:
           done
           echo "all spawned"
           wait
+          bash git-send.sh ${{ matrix.oone }}
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
