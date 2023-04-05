@@ -7,8 +7,8 @@ echo "starting_${oone} ${myoct} .. "
 #mkdir "/tmp/tmp_${myoct}"
 #tar c . |(cd "/tmp/tmp_${myoct}"||exit ;tar xv|wc -l)
 #test -e "/tmp/tmp_${myoct}/.git" || exit 1
-#cd "/tmp/tmp_${myoct}"|| exit 1
-#pwd
+cd "/tmp/tmp_${myoct}"|| exit 1
+pwd
 #echo "GIT ACTIONS_${oone} ${myoct}"
 ##git branch -D "rdns_automerge_${oone}_${myoct}" || true
 #git checkout -b "rdns_automerge_${oone}_${myoct}" pages

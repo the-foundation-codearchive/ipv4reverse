@@ -134,7 +134,7 @@ jobs:
 
           
           
-          bash git-new ${{ matrix.oone }}
+          bash /tmp/git-new.sh ${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           for myoct in $(seq 1 255);do 
              (
@@ -145,7 +145,7 @@ jobs:
           done
           echo "all spawned"
           wait
-          bash git-send.sh ${{ matrix.oone }}
+          bash /tmp/git-send.sh ${{ matrix.oone }}
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
