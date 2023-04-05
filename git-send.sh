@@ -36,6 +36,9 @@ echo -n "Pull Request_creating pull req:"
       
       prcreateres=$(gh pr create -B pages -H "rdns_automerge_${oone}" --label automerge --title "Merge rdns_automerge_${oone} into base_branch" --body-file "/tmp/pullreq_${oone}.md" && ( echo PR CREATED;rm /dev/shm/.lock_git_pr_${oone}; curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-request?qpm=1" ) ) 
       echo "$prcreateres"
+      # unlock / exit if branch failed
+      echo "$prcreateres"|grep -i -e "has no history in common"  && rm "/dev/shm/.lock_git_pr_${oone}"
+
       #echo "$prcreateres"|grep -i -e "too quick" -e "too fast" -e "rate limit" 
       bash -c 'sleep $(($RANDOM%23))'
     done
