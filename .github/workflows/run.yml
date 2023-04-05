@@ -125,7 +125,8 @@ jobs:
       - name: Run thingy... 
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
-          while(true);do sleep 30;echo -n "$(uptime) .. " ;ps -AcF |grep -e dns -e acth.sh|wc -l ;done &
+          touch /dev/shm/.process_running
+          while (test -e  /dev/shm/.process_running );do sleep 30;echo -n "$(uptime) .. " ;ps -AcF |grep -e dns -e acth.sh|wc -l ;done &
           uptime
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
@@ -140,11 +141,13 @@ jobs:
              (
              (bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
              echo "done ${{ matrix.oone }} $myoct" >&2
+             [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
              ) & sleep 5
              bash -c 'sleep $(($RANDOM%42))'
           done
           echo "all spawned"
-          wait
+          ## wait for max 30 min to complete job)
+          for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
           bash /tmp/git-send.sh ${{ matrix.oone }}
           exit 0
         env:
