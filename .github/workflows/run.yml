@@ -116,31 +116,29 @@ jobs:
       - name: Install dependencies
         run: |
           (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
-          curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           wait
 
       - name: Run thingy... 
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           touch /dev/shm/.process_running
-          while (test -e  /dev/shm/.process_running );do sleep 30;echo -n "$(uptime) .. " ;ps -AcF |grep -e dns -e acth.sh|wc -l ;done &
+          while (test -e  /dev/shm/.process_running );do sleep 30;echo -n "$(uptime) .. " ;ps -AcF |grep -e dns -e act.sh|grep -v grep |wc -l ;done &
           uptime
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
-
-          
-          
           bash /tmp/git-new.sh ${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           for myoct in $(seq 1 255);do 
              (
              (bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
              echo "done ${{ matrix.oone }} $myoct" >&2
+             [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
              ) & sleep 5
              bash -c 'sleep $(($RANDOM%42))'
