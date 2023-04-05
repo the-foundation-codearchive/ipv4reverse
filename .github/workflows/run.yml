@@ -140,7 +140,7 @@ jobs:
              (
              (bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
              echo "done ${{ matrix.oone }} $myoct" >&2
-             ) & sleep 90
+             ) & sleep 5
              bash -c 'sleep $(($RANDOM%42))'
           done
           echo "all spawned"

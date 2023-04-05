@@ -15,13 +15,13 @@ for octet_three in 0 $(seq 1 254);do
 [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]   && echo "throttle  FOR ${octet_one}/${octet_two}"
 [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 5 ]]   && sleep 5
 [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]  && sleep 15
-[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]  && sleep 20
+#[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]  && sleep 20
 
 test -e lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p lists/${octet_one}/${octet_one}.${octet_two}
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
      echo  {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
      mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
-#     /tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
+     /tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
      /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one}/res --processes 2 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}/ && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}/*
      test -e /tmp/log${octet_three}.${octet_two}.${octet_one}  && (grep -e SERVFAIL -e REFUSE -e NXDOMAIN -e OK /tmp/log${octet_three}.${octet_two}.${octet_one}|sed 's/^/ip4_'${octet_one}.${octet_two}.${octet_three}'| /g'  ; rm /tmp/log${octet_three}.${octet_two}.${octet_one}  ) 
