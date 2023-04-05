@@ -1,0 +1,12 @@
+1680592791|49.159.92.20.in-addr.arpa. 10 IN PTR node-1b-nc.east.pp.twsegcloud.com.
+1680592791|53.159.92.20.in-addr.arpa. 10 IN PTR node-3b-nc.east.pp.twsegcloud.com.
+1680592791|51.159.92.20.in-addr.arpa. 10 IN PTR node-2b-nc.east.pp.twsegcloud.com.
+1680592791|54.159.92.20.in-addr.arpa. 10 IN PTR node-4a-nc.east.pp.twsegcloud.com.
+1680592791|55.159.92.20.in-addr.arpa. 10 IN PTR node-4b-nc.east.pp.twsegcloud.com.
+1680592791|44.159.92.20.in-addr.arpa. 10 IN PTR smtp-lb-in-1-east.pp.twsegcloud.com.
+1680592791|47.159.92.20.in-addr.arpa. 10 IN PTR smtp-lb-in-4-east.pp.twsegcloud.com.
+1680592791|46.159.92.20.in-addr.arpa. 10 IN PTR smtp-lb-in-3-east.pp.twsegcloud.com.
+1680592791|48.159.92.20.in-addr.arpa. 10 IN PTR node-1a-nc.east.pp.twsegcloud.com.
+1680592791|45.159.92.20.in-addr.arpa. 10 IN PTR smtp-lb-in-2-east.pp.twsegcloud.com.
+1680592791|52.159.92.20.in-addr.arpa. 10 IN PTR node-3a-nc.east.pp.twsegcloud.com.
+1680592791|50.159.92.20.in-addr.arpa. 10 IN PTR node-2a-nc.east.pp.twsegcloud.com.
