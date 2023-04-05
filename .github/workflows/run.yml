@@ -140,8 +140,8 @@ jobs:
              echo "done ${{ matrix.oone }} $myoct" >&2
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
-             ) & sleep 5
-             bash -c 'sleep $(($RANDOM%42))'
+             ) & sleep 3
+             bash -c 'sleep $(($RANDOM%5))'
           done
           echo "all spawned"
           ## wait for max 30 min to complete job)
