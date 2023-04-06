@@ -149,6 +149,7 @@ jobs:
           for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
           echo finished waiting
           #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
+          pwd
           echo thingy done
           exit 0
         env:
@@ -156,12 +157,12 @@ jobs:
             MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
 #            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create  artifacts
-        run: bash -c 'mkdir upload; mv /tmp/tmp_${{ matrix.oone }}/lists upload/'
+        run: bash -c 'mkdir upload; mv lists upload/'
       - name: push artifacts
         uses: actions/upload-artifact@v3
         with:
           name: artifact-data-${{ matrix.oone }}
-          path: /tmp/tmp_${{ matrix.oone }}/lists/
+          path: upload/lists/
           if-no-files-found: ignore 
           # 'error' 'warn' or 'ignore' are also available, defaults to `warn`
           retention-days: 2
