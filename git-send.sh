@@ -54,9 +54,8 @@ gh pr list --limit 33 |grep rdns_automerge|cut  -f1 | while read a ;do
       sleep $(curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/waittime/github-pull-merge")
       bash -c 'sleep $(($RANDOM%23))'
     done
-    res=$(export GITHUB_TOKEN=$MERGERS_TOKEN;gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;
-    curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-merge?qpm=1"
-
+    res=$(export GITHUB_TOKEN=$MERGERS_TOKEN;gh pr merge --delete-branch --squash --auto "$a" 2>&1 && curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-merge?qpm=1"  ) ;
+    
     echo "$res";echo "$res"|grep -i "rate limit" && ( echo "RATE LIMIT HIT .. sleeping and trying again.." ;
                                                       while (   curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/check/github-pull-merge"|grep LOCKED -q);do 
                                                         echo "WATING FOR GITHUB API to merge Pull Requests"
