@@ -132,7 +132,8 @@ jobs:
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
-          bash /tmp/git-new.sh ${{ matrix.oone }}
+          #bash /tmp/git-new.sh ${{ matrix.oone }}
+          mkdir /tmp/tmp_${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           for myoct in $(seq 1 255);do 
              (
@@ -146,21 +147,33 @@ jobs:
           echo "all spawned"
           ## wait for max 30 min to complete job)
           for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
-          bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
+          echo finished waiting
+          #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
+          echo thingy done
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
             MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
 #            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: create artifacts
-        if: always()
-        run: bash -c 'mkdir upload; cp $(find /tmp/ -maxdepth 1 -name "*.log") upload/'
+      - name: create  artifacts
+        run: bash -c 'mkdir upload; mv /tmp/tmp_${{ matrix.oone }}/lists upload/'
       - name: push artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact-data-${{ matrix.oone }}
+          path: /tmp/tmp_${{ matrix.oone }}/lists/
+          if-no-files-found: ignore 
+          # 'error' 'warn' or 'ignore' are also available, defaults to `warn`
+          retention-days: 2
+      - name: create log artifacts
+        if: always()
+        run: bash -c 'mkdir logupload; cp $(find /tmp/ -maxdepth 1 -name "*.log") logupload/'
+      - name: push log artifacts
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: artifact-log-${{ matrix.oone }}
-          path: upload/*gz
+          path: logupload/*gz
           if-no-files-found: ignore 
           # 'error' 'warn' or 'ignore' are also available, defaults to `warn`
           retention-days: 2
@@ -177,9 +190,45 @@ jobs:
 #            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
             MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  finalize:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download result from gen
+        uses: actions/download-artifact@v3
+      - name: "show artifact data level1"
+        run: bash -c "ls -1 artifact-data-*/lists/* -1d"|| true
+      - name: "generate data"
+        run: bash -c "mkdir /tmp/lists/;mv artifact-data-*/lists/*  /tmp/lists"
+      - name: Install dependencies and run
+        run: |
+          uptime
+          echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
+          echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
+          (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
+          wait
+          git bash /tmp/git-new.sh 0
+          cd /tmp/tmp_0/
+          rm -rf lists || true
+          mv /tmp/lists/ .
+          bash -c "timeout 1800 bash /tmp/git-send.sh 0"
+          exit 0
+          
+        env:
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
 
   cleanruns:
-    needs: generate
+    needs: finalize
     runs-on: ubuntu-latest
     steps:
       - name: Delete workflow runs
