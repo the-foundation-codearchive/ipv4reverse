@@ -15,10 +15,10 @@ grep "othing to commit" "/tmp/gitres_${oone}.log " 2>/dev/null|| true
   echo -n "##generated_TIME: ";date -u ;echo ;
   echo;echo "## git results";echo;
   echo '```';
-     wc -l "/tmp/git_${oone}.log" "/tmp/gitres_${oone}.log";
+     wc -l "/tmp/gitres_${oone}.log";
      echo "git result(truncated):"
      echo 
-     (cat "/tmp/git_${oone}.log" ;cat "/tmp/gitres_${oone}.log")|head -c 55555
+     (cat "/tmp/gitres_${oone}.log")|head -c 55555
   echo '```';echo;
   ) > "/tmp/pullreq_${oone}.md"
 sleep 3;
