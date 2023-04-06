@@ -1,8 +1,0 @@
-1680599623|12.254.173.17.in-addr.arpa. 3600 IN PTR init-st11-a-old.gc.apple.com.
-1680599623|13.254.173.17.in-addr.arpa. 43200 IN PTR static-st11-a.gc.apple.com.
-1680599623|16.254.173.17.in-addr.arpa. 43200 IN PTR static-st11-b.gc.apple.com.
-1680599623|20.254.173.17.in-addr.arpa. 43200 IN PTR sandbox-st11-1.gc.apple.com.
-1680599623|14.254.173.17.in-addr.arpa. 43200 IN PTR service-st11-b.gc.apple.com.
-1680599623|21.254.173.17.in-addr.arpa. 21600 IN PTR service-sandbox-st11-1.gc.apple.com.
-1680599623|11.254.173.17.in-addr.arpa. 21600 IN PTR service-st11-a.gc.apple.com.
-1680599623|15.254.173.17.in-addr.arpa. 43200 IN PTR init-st11-b-old.gc.apple.com.
