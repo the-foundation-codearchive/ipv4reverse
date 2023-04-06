@@ -39,7 +39,7 @@ echo -n "Pull Request_creating pull req:"
       # unlock / exit if branch failed
       echo "$prcreateres"|grep -i -e "has no history in common"  && rm "/dev/shm/.lock_git_pr_${oone}"
 
-      #echo "$prcreateres"|grep -i -e "too quick" -e "too fast" -e "rate limit" 
+      echo "$prcreateres"|grep -i -e "too quick" -e "too fast" -e "rate limit" &&  curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-request?qpm=1"|| true 
       bash -c 'sleep $(($RANDOM%23))'
     done
 bash -c 'sleep $(($RANDOM%23))'
@@ -63,7 +63,7 @@ gh pr list --limit 33 |grep rdns_automerge|cut  -f1 | while read a ;do
                                                         sleep $(curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/waittime/github-pull-merge")
                                                         bash -c 'sleep $(($RANDOM%23))'
                                                       done
-                                                      sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ;
-                                                      curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-merge?qpm=1"
+                                                      gh pr merge --delete-branch --squash --auto "$a" 2>&1 && curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-merge?qpm=1"
+                                                      
                                                      ) ;sleep 3;done|| true 
 exit 0
