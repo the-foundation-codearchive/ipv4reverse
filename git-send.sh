@@ -1,13 +1,14 @@
 #!/bin/bash
 
 oone=$1
+cd "/tmp/tmp_${oone}"|| exit 1
 source /dev/shm/.tokenv || true 
 echo "git_send_${oone}  "
 ( git add -A 2>&1 || true; 
-  git commit -m "automerge rdns_automerge_${oone}" 2>&1  || true ) | tee -a "/tmp/gitres_${oone}.log"|grep -i -e ^done -e "|OK" -e fail -e error 
-
+  git commit -m "automerge rdns_automerge_${oone}" 2>&1  || true ) | tee -a "/tmp/gitres_${oone}.log"
 echo "none" > "/tmp/gitres_${oone}.log"
-( bash -c "git push --set-upstream origin rdns_automerge_${oone} | tee -a /tmp/gitres_${oone}.log || true" || true ) 
+( git push --set-upstream origin rdns_automerge_${oone} | tee -a /tmp/gitres_${oone}.log || true) 
+
 grep "othing to commit" "/tmp/gitres_${oone}.log " 2>/dev/null|| true
 (
   echo "# Auto merge from actions";echo;
@@ -54,8 +55,8 @@ gh pr list --limit 33 |grep rdns_automerge|cut  -f1 | while read a ;do
       sleep $(curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/waittime/github-pull-merge")
       bash -c 'sleep $(($RANDOM%23))'
     done
-    res=$(export GITHUB_TOKEN=$MERGERS_TOKEN;gh pr merge --delete-branch --squash --auto "$a" 2>&1 && curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-merge?qpm=1"  ) ;
-    
+
+    res=$(export GITHUB_TOKEN=$MERGERS_TOKEN;gh pr merge --delete-branch --squash --auto "$a" 2>&1 && curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/lock/github-pull-merge?qpm=1" ||true  ) ;
     echo "$res";echo "$res"|grep -i "rate limit" && ( echo "RATE LIMIT HIT .. sleeping and trying again.." ;
                                                       while (   curl -s -u api:$API_LIMIT_HELPER_SECRET "${API_LIMIT_HELPER_URL%/}/check/github-pull-merge"|grep LOCKED -q);do 
                                                         echo "WATING FOR GITHUB API to merge Pull Requests"

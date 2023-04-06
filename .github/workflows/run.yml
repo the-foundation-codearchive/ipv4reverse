@@ -146,7 +146,7 @@ jobs:
           echo "all spawned"
           ## wait for max 30 min to complete job)
           for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
-          bash /tmp/git-send.sh ${{ matrix.oone }}
+          bash -c timeout 1800 "bash /tmp/git-send.sh ${{ matrix.oone }}"
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
