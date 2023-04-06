@@ -1,6 +1,0 @@
-1680600123|17.249.179.17.in-addr.arpa. 43200 IN PTR timestamp-reno02.apple.com.
-1680600123|2.249.179.17.in-addr.arpa. 43200 IN PTR ocsp-reno01.apple.com.
-1680600123|18.249.179.17.in-addr.arpa. 21600 IN PTR ocsp-reno02.apple.com.
-1680600123|1.249.179.17.in-addr.arpa. 43200 IN PTR timestamp-reno01.apple.com.
-1680600123|19.249.179.17.in-addr.arpa. 43200 IN PTR crl-reno02.apple.com.
-1680600123|3.249.179.17.in-addr.arpa. 43200 IN PTR crl-reno01.apple.com.
