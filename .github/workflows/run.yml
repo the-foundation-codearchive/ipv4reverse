@@ -140,13 +140,13 @@ jobs:
              echo "done ${{ matrix.oone }} $myoct" >&2
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
-             ) & sleep 0.5
+             ) & sleep 0.2
              bash -c 'sleep $(($RANDOM%5))'
           done
           echo "all spawned"
           ## wait for max 30 min to complete job)
           for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
-          bash -c timeout 1800 "bash /tmp/git-send.sh ${{ matrix.oone }}"
+          bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
