@@ -1,6 +1,0 @@
-1680599407|6.85.171.17.in-addr.arpa. 43200 IN PTR crt-pod1-smp-device.apple.com.
-1680599407|6.85.171.17.in-addr.arpa. 43200 IN PTR pat-pod1-smp-device.apple.com.
-1680599407|41.85.171.17.in-addr.arpa. 43200 IN PTR stg-pod1-smp-device.apple.com.
-1680599407|7.85.171.17.in-addr.arpa. 21600 IN PTR apple-pay-gateway-cert.apple.com.
-1680599407|7.85.171.17.in-addr.arpa. 21600 IN PTR apple-pay-gateway-pat.apple.com.
-1680599407|44.85.171.17.in-addr.arpa. 43200 IN PTR apple-pay-gateway-stage.apple.com.
