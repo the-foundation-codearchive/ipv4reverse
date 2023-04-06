@@ -1,0 +1,9 @@
+1680590827|70.34.69.17.in-addr.arpa. 3600 IN PTR crk-asa-vpn.euro.apple.com.
+1680590827|70.34.69.17.in-addr.arpa. 3600 IN PTR ieork1-corpclient-vpn2.euro.apple.com.
+1680590827|65.34.69.17.in-addr.arpa. 3600 IN PTR ieork1-extranet-gw-v666-hsrp.euro.apple.com.
+1680590827|66.34.69.17.in-addr.arpa. 43200 IN PTR ieork1-extranet-gw1-v666-hsrp.euro.apple.com.
+1680590827|69.34.69.17.in-addr.arpa. 300 IN PTR crk-asa-vpn.euro.apple.com.
+1680590827|69.34.69.17.in-addr.arpa. 300 IN PTR ieork1-corpclient-vpn.euro.apple.com.
+1680590827|69.34.69.17.in-addr.arpa. 300 IN PTR ieork1-corpclient-vpn1.euro.apple.com.
+1680590827|68.34.69.17.in-addr.arpa. 21600 IN PTR ivpn-ieork1.euro.apple.com.
+1680590827|67.34.69.17.in-addr.arpa. 43200 IN PTR ieork1-extranet-gw2-v666-hsrp.euro.apple.com.
