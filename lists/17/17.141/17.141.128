@@ -1,7 +1,0 @@
-1680596926|134.128.141.17.in-addr.arpa. 21600 IN PTR pr2-pod3-smp-device.apple.com.
-1680596926|8.128.141.17.in-addr.arpa. 43200 IN PTR nc1-pod1-smp-device-dr.apple.com.
-1680596926|6.128.141.17.in-addr.arpa. 21600 IN PTR pr2-pod1-smp-device.apple.com.
-1680596926|72.128.141.17.in-addr.arpa. 21600 IN PTR nc1-pod2-smp-device-dr.apple.com.
-1680596926|70.128.141.17.in-addr.arpa. 43200 IN PTR pr2-pod2-smp-device.apple.com.
-1680596926|200.128.141.17.in-addr.arpa. 43200 IN PTR nc-pod4-smp-device-dr.apple.com.
-1680596926|136.128.141.17.in-addr.arpa. 43200 IN PTR nc1-pod3-smp-device-dr.apple.com.
