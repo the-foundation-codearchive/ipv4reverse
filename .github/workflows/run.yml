@@ -151,13 +151,15 @@ jobs:
           #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
           pwd
           echo thingy done
+          mkdir upload
+          mv /tmp/tmp_${{ matrix.oone }}/lists upload/
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
             MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
 #            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: create  artifacts
-        run: bash -c 'mkdir upload; mv lists upload/'
+#      - name: create  artifacts
+#        run: bash -c 'mkdir upload; mv /tmp/tmp_${{ matrix.oone }}/lists upload/'
       - name: push artifacts
         uses: actions/upload-artifact@v3
         with:
