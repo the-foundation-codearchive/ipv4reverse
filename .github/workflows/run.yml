@@ -122,6 +122,11 @@ jobs:
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           (cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
+          #spawn resolver
+          (echo -n $(echo L3RtcC9kbnNwcm94eSAtLXBvcnQgNTMgLS1lZG5zIC11IGh0dHBzOi8vZG5zLm5leHRkbnMuaW8vM2QyY2I4IC11IHRsczovLzNkMmNiOC5kbnMubmV4dGRucy5pbyAtdSAyYTA3OmE4YzA6OjNkOjJjYjggLXUgMmEwNzphOGMwOjozZDoyY2I4IA==);echo " -f 1.1.1.1 -f 4.2.2.4 -f 4.2.2.2 -f 8.8.8.8 -f 9.9.9.9 -f 114.114.114 -f 8.8.4.4 -f 4.2.2.3") |sudo bash & 
+          sleep 10
+          host google.com 127.0.0.1
+          host ebay.com 127.0.0.1
           wait
 
       - name: Run thingy... 
