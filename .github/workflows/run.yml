@@ -137,7 +137,7 @@ jobs:
           #bash /tmp/git-new.sh ${{ matrix.oone }}
           mkdir /tmp/tmp_${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
-          bash -c "echo L3RtcC9kbnNwcm94eSAtLWVkbnMgLXUgaHR0cHM6Ly9kb2guZ28tcC5yby5ldS5vcmcgLWYgdGxzOi8vZG90LmRucy5teS5jbG91ZG5zLmluIC1iIDguOC44LjggLWIgNC4yLjIuNCAtLWNhY2hlCg==|base64 -d |bash"
+          bash -c "echo L3RtcC9kbnNwcm94eSAtLWVkbnMgLXUgaHR0cHM6Ly9kb2guZ28tcC5yby5ldS5vcmcgLWYgdGxzOi8vZG90LmRucy5teS5jbG91ZG5zLmluIC1iIDguOC44LjggLWIgNC4yLjIuNCAtLWNhY2hlCg==|base64 -d |bash" & 
           for myoct in $(seq 1 255);do 
             #[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 20 ]]   && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct}"$(cat /proc/loadavg) >&2 )
             [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 15 ]]   && (sleep 20 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct}"$(cat /proc/loadavg) >&2 )
