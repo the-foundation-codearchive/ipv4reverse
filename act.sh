@@ -48,4 +48,5 @@ find lists/ -mindepth 1 -delete
 ##bash -c 'sleep $(($RANDOM%23))'
 ##export GITHUB_TOKEN=$MERGERS_TOKEN
 ##echo Pull Request Automerge && echo "OPEN PReqs:" && gh pr list --limit 33  && gh pr list --limit 33 |grep rdns_automerge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(export GITHUB_TOKEN=$MERGERS_TOKEN;gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+echo finished
 exit 0
