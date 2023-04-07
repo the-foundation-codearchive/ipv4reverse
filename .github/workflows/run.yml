@@ -118,7 +118,7 @@ jobs:
         run: |
           (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
-          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           (cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
@@ -126,7 +126,7 @@ jobs:
 
       - name: Run thingy... 
         run: |
-          git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+          git config -  -global user.email "actions@github.com" && git config --global user.name "you@example.com"
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do sleep 30;echo -n "$(uptime) .. " ;ps -AcF |grep -e dns -e act.sh|grep -v grep |wc -l ;done &
           uptime
@@ -164,9 +164,15 @@ jobs:
                 ${{ matrix.oone }} $myoct 
                 source /dev/shm/.tokenv || true ;
                 echo "starting_${{ matrix.oone }} $myoct .. ";
-                cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1;pwd;test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log";( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";find lists/ -mindepth 1 -delete;( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log");echo "act: finished in "$(pwd);exit 0;
+                cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1;
+                pwd;
+                test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log";
+                ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
+                find lists/ -mindepth 1 -delete;( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log");
+                echo "act: finished in "$(pwd);
+                exit 0;
                )
-             sleep 1;# prevent /0
+             sleep 1; # prevent /0
              octend=$(date -u +%s)
              octtime=$(($octend-$octstart))
              optime=$(($octend-$opstart))
