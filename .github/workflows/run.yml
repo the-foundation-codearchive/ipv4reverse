@@ -155,7 +155,7 @@ jobs:
           timeout 10 host google.com 127.0.0.1 || true 
           host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true 
           host start.google.com 127.0.0.1 || true 
-          killall -9 dnsproxy || true 
+          sudo killall -9 dnsproxy || true 
 
 
           doneip=0
