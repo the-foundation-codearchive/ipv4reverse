@@ -149,10 +149,10 @@ jobs:
           opstart=$(date -u +%s)
           for myoct in $(seq 1 255);do 
             #[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 20 ]]   && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 15 ]]   && (sleep 20 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 6 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 15 ]]   && (sleep 20 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${{ matrix.oone }}/${myoct} "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 6  ]]   && (sleep  5 ;  echo "throttled 5 s FOR ${{ matrix.oone }}/${myoct} "$(uptime |sed 's/.\+ up/up/g') >&2 )
              octstart=$(date -u +%s)
              doneip=$(($myoct*255))
              (
@@ -168,7 +168,7 @@ jobs:
                 test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log";
                 ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
                 #find lists/ -mindepth 1 -delete;
-                ( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log");
+                ( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
                 #echo "act: finished in "$(pwd);
                 exit 0;
                )
