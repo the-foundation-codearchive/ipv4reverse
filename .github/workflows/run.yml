@@ -161,7 +161,6 @@ jobs:
 
                #main thingy
                (
-                ${{ matrix.oone }} $myoct 
                 source /dev/shm/.tokenv || true ;
                 echo "starting_${{ matrix.oone }} $myoct .. ";
                 cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1;
