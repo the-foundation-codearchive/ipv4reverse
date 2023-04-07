@@ -139,11 +139,11 @@ jobs:
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           bash -c "echo L3RtcC9kbnNwcm94eSAtLWVkbnMgLXUgaHR0cHM6Ly9kb2guZ28tcC5yby5ldS5vcmcgLWYgdGxzOi8vZG90LmRucy5teS5jbG91ZG5zLmluIC1iIDguOC44LjggLWIgNC4yLjIuNCAtLWNhY2hlCg==|base64 -d |bash" & 
           for myoct in $(seq 1 255);do 
-            #[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 20 ]]   && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct}"$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 15 ]]   && (sleep 20 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct}"$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${{ matrix.oone }}/${myoct}"$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct}"$(cat /proc/loadavg) >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 6 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${{ matrix.oone }}/${myoct}"$(cat /proc/loadavg) >&2 )
+            #[[ $(cat /proc/loadavg |cut -d"." -f1) -ge 20 ]]   && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 15 ]]   && (sleep 20 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 6 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${{ matrix.oone }}/${myoct} "$(cat /proc/loadavg) >&2 )
              (
               octstart=$(date -u +%s)
              (cd "/tmp/tmp_${{ matrix.oone }}";bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
