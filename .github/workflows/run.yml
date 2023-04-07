@@ -154,7 +154,7 @@ jobs:
           timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true 
           timeout 10 host google.com 127.0.0.1 || true 
           host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true 
-          host start.google.com 127.0.0.1 || true 
+          host starting.command.lan 127.0.0.1 || true 
 
 
           doneip=0
