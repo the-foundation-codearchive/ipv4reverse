@@ -137,10 +137,11 @@ jobs:
           #bash /tmp/git-new.sh ${{ matrix.oone }}
           mkdir /tmp/tmp_${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
-          echo L3RtcC9kbnNwcm94eSAtLWVkbnMgLXUgaHR0cHM6Ly9kb2guZ28tcC5yby5ldS5vcmcgLWYgdGxzOi8vZG90LmRucy5teS5jbG91ZG5zLmluIC1iIDguOC44LjggLWIgNC4yLjIuNCAtLWNhY2hlCg==|base64 -d |bash & 
+          #spawn resolver
+          echo L3RtcC9kbnNwcm94eSAtLWVkbnMgLXUgaHR0cHM6Ly9kb2guZ28tcC5yby5ldS5vcmcgLWYgdGxzOi8vZG90LmRucy5teS5jbG91ZG5zLmluIC1iIDguOC44LjggLWIgNC4yLjIuNCAtLWNhY2hlCg==|base64 -d |sudo bash & 
           host youtube.com 127.0.0.1|| true
           host github.com 127.0.0.1||true
-          
+
 
           doneip=0
           doneoct=0
