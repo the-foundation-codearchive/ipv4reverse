@@ -169,7 +169,7 @@ jobs:
                 ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
                 #find lists/ -mindepth 1 -delete;
                 ( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log");
-                echo "act: finished in "$(pwd);
+                #echo "act: finished in "$(pwd);
                 exit 0;
                )
              sleep 1; # prevent /0
