@@ -41,5 +41,5 @@ done
 uptime
 wait
 find lists -type f -exec wc -l {} \;
-pwd
+echo gen quitting from $(pwd)
 #done

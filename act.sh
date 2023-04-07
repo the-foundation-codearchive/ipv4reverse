@@ -16,7 +16,7 @@ pwd
 #git branch
 test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log"
 
-(echo -n "$(date) ";echo " STARTING FOR ${oone} ${myoct}" )> "/tmp/gen_${myoct}.log"
+( echo -n "$(date) ";echo " STARTING FOR ${oone} ${myoct}" )> "/tmp/gen_${myoct}.log"
 find lists/ -mindepth 1 -delete
 ( ( bash /tmp/gen.sh  "${oone}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log")
 
@@ -48,5 +48,6 @@ find lists/ -mindepth 1 -delete
 ##bash -c 'sleep $(($RANDOM%23))'
 ##export GITHUB_TOKEN=$MERGERS_TOKEN
 ##echo Pull Request Automerge && echo "OPEN PReqs:" && gh pr list --limit 33  && gh pr list --limit 33 |grep rdns_automerge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(export GITHUB_TOKEN=$MERGERS_TOKEN;gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ; gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
-echo finished
+echo "act: finished in "$(pwd)
+
 exit 0
