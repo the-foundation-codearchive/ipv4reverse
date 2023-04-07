@@ -12,11 +12,11 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 echo "running FOR ${octet_one}/${octet_two}"
 for octet_three in 0 $(seq 1 254);do 
 
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 20 ]]   && (sleep 30 ;  echo "throttled 10s FOR ${octet_one}.${octet_two}.${octet_three} " >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 15 ]]   && (sleep 20 ;  echo "throttled 10s FOR ${octet_one}.${octet_two}.${octet_three} " >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${octet_one}.${octet_two}.${octet_three} " >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${octet_one}.${octet_two}.${octet_three} " >&2 )
-            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 6 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${octet_one}.${octet_two}.${octet_three} " >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 20 ]]   && (sleep 23 ;  echo "throttled 23s FOR ${octet_one}.${octet_two}.${octet_three} "$(cat /proc/loadvg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 15 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${octet_one}.${octet_two}.${octet_three} "$(cat /proc/loadvg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${octet_one}.${octet_two}.${octet_three} "$(cat /proc/loadvg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${octet_one}.${octet_two}.${octet_three} "$(cat /proc/loadvg) >&2 )
+            [[ $(cat /proc/loadavg |cut -d"." -f1) -ge 8 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${octet_one}.${octet_two}.${octet_three} "$(cat /proc/loadvg) >&2 )
 
 test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
@@ -34,13 +34,13 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) &   
 
-sleep 4.2
+sleep 0.42
 sleep 0.$(($RANDOM%9))
 
 
 done
 uptime
 wait
-find lists -type f -exec wc -l {} \;
+#find lists -type f -exec wc -l {} \;
 echo gen quitting from $(pwd)
 #done
