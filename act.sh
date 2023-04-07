@@ -4,10 +4,10 @@ oone=$1
 myoct=$2
 source /dev/shm/.tokenv || true 
 echo "starting_${oone} ${myoct} .. "
-#mkdir "/tmp/tmp_${myoct}"
-#tar c . |(cd "/tmp/tmp_${myoct}"||exit ;tar xv|wc -l)
-#test -e "/tmp/tmp_${myoct}/.git" || exit 1
-cd "/tmp/tmp_${myoct}"|| exit 1
+#mkdir "/tmp/tmp_${oone}"
+#tar c . |(cd "/tmp/tmp_${oone}"||exit ;tar xv|wc -l)
+#test -e "/tmp/tmp_${oone}/.git" || exit 1
+cd "/tmp/tmp_${oone}"|| exit 1
 pwd
 #echo "GIT ACTIONS_${oone} ${myoct}"
 ##git branch -D "rdns_automerge_${oone}_${myoct}" || true
