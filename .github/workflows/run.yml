@@ -124,14 +124,20 @@ jobs:
           #(cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
           (cd /tmp/;wget -c https://github.com/cbuijs/routedns-binaries/raw/master/linux/amd64/routedns;chmod +x routedns )
           #spawn resolver
-          #sudo service systemd-resolved stop || true
-          #(echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
-          #sudo bash -c '( $(echo L3RtcC9kbnNwcm94eSAtLXBvcnQgNTMgLS1lZG5zIC11IGh0dHBzOi8vZG5zLm5leHRkbnMuaW8vM2QyY2I4IC11IHRsczovLzNkMmNiOC5kbnMubmV4dGRucy5pbyAtdSAyYTA3OmE4YzA6OjNkOjJjYjggLXUgMmEwNzphOGMwOjozZDoyY2I4IA==|base64 -d);echo " -f 1.1.1.1 -f 4.2.2.4 -f 4.2.2.2 -f 8.8.8.8 -f 9.9.9.9 -f 114.114.114 -f 8.8.4.4 -f 4.2.2.3")'  & 
-          #echo waiting for resolver
-          #sleep 10
-          #timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true 
-          #timeout 10 host google.com 127.0.0.1 || true 
-          #killall -9 dnsproxy || true 
+          sudo service systemd-resolved stop || true
+          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
+          sudo apt update || true
+          sudo apt-get install -y --no-install-recommends dnsmasq-base 
+          (cd /tmp/; echo "H4sIAAAAAAAAA+2VO2/CMBCAmfMrLHZC/EigSFWXDp2qqmWrGNIkQCQ3Ro6DQFX/e8+hpeFREBIEKu7LYNkX31lwX6xVYZI4y91YjV2j3mXj+HhAEAg7ckr59xiU62WMeQ0qBBWMUdGBdcp93mkQ7wRn2aDITagJachwnugdFffF/ykmNTIht6T5bBvh/vGFRCobpqNChyZVGRkqTSZaTdM4zUYE4i01TXTrod9/IlJFoZTzpuO86iRXEgL5wHEI+Z26kVRFPJShTlrQYQMIhnEM4dzWHBszyXvttu2/LJkZO6aqzWMWvXU/7mD62YQdUN+oSEm7BZLYejLNTZIt6y2nbnmmVhFP1kpR1nE9eGiv6/t8PSu8b5d+jm2XVg/e3FrGRIeVgff3lan7/9cV/9mJPgCH+B94zPofUA/9r4Pr8/+mHv+3lbls/8257n/udxb+wxfA90R5//sC/a+DiqrZDPoAutAMnEpHL2R0VxWF2w2ae9VLs+JlVcRKtp7w13eW7lWVWJ5jW8JSud0JS8v+SHjun/viqPp/rvt/6T9jTIjF/c8D9L8O6vafH9v/zYToP4IgCIIgCIIgCIIgCIIgCIIgV80XI2ylUQAoAAA="|base64 -d | tar xvz)
+          (cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do /tmp/routedns/tmp/$resfile & done ) &
+          dnsmasq -f -d --port 53 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv & 
+          sleep 2
+          sudo service systemd-resolved stop || true
+          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
+          echo waiting for resolver
+          sleep 3
+          timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true
+          timeout 10 host test.command.lan 127.0.0.1 || true  
           wait
 
       - name: Run thingy... 
@@ -148,8 +154,7 @@ jobs:
           mkdir /tmp/tmp_${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           #spawn resolver
-          sudo apt update || true
-          sudo apt-get install -y --no-install-recommends dnsmasq-base 
+
           (cd /tmp/; echo "H4sIAAAAAAAAA+2VO2/CMBCAmfMrLHZC/EigSFWXDp2qqmWrGNIkQCQ3Ro6DQFX/e8+hpeFREBIEKu7LYNkX31lwX6xVYZI4y91YjV2j3mXj+HhAEAg7ckr59xiU62WMeQ0qBBWMUdGBdcp93mkQ7wRn2aDITagJachwnugdFffF/ykmNTIht6T5bBvh/vGFRCobpqNChyZVGRkqTSZaTdM4zUYE4i01TXTrod9/IlJFoZTzpuO86iRXEgL5wHEI+Z26kVRFPJShTlrQYQMIhnEM4dzWHBszyXvttu2/LJkZO6aqzWMWvXU/7mD62YQdUN+oSEm7BZLYejLNTZIt6y2nbnmmVhFP1kpR1nE9eGiv6/t8PSu8b5d+jm2XVg/e3FrGRIeVgff3lan7/9cV/9mJPgCH+B94zPofUA/9r4Pr8/+mHv+3lbls/8257n/udxb+wxfA90R5//sC/a+DiqrZDPoAutAMnEpHL2R0VxWF2w2ae9VLs+JlVcRKtp7w13eW7lWVWJ5jW8JSud0JS8v+SHjun/viqPp/rvt/6T9jTIjF/c8D9L8O6vafH9v/zYToP4IgCIIgCIIgCIIgCIIgCIIgV80XI2ylUQAoAAA="|base64 -d | tar xvz)
           (cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do /tmp/routedns/tmp/$resfile & done ) &
           dnsmasq -f -d --port 53 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv & 
