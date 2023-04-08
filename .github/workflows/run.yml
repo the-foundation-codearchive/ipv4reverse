@@ -152,12 +152,14 @@ jobs:
           mkdir /tmp/tmp_${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           #spawn resolver
-          ( sudo service systemd-resolved stop || true;          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) ) || true &
+          ( sudo service systemd-resolved stop || true;          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) ) || true &   
           (cd /tmp/; echo "H4sIAAAAAAAAA+2ZS2+bQBSFveZXjPC2nswMTyNV3XTRbqqozS7yAg84QSKMBeMoUdX/3ovdJuDYeUjBiaPzWcjc8XDu5XrAR7g2K5tnVcMzc8mtuSpHr48gwtBv3z0pvX/v4Xp8va/ESPq+9JUfqojGpRf4asTEALU8YNXYtGZsVKa3ef1Ixqc+P1JsYcucfWbuz3YhfP3xi2lTLYqLVZ3awlRsYWq2rM11kRXVBaPPJ+Y6ryffzs5OWWl0Wpa3rjNubJ7XNIFX+Y1tV1Nh2GXasDTL6rxpmBQ+V17MZSy5ip+er8SUt1sQcRkG++d/P70OOwcJmcjpQiSpbvcikQS+EIlaLJJFruMkUvqR3H2tVORJOCUZX5JCkAQi8JO1kNRJpGPpnF/UZrVseJ1WmbmaOfZ2mTPWtnIzQm0hKVNSuxoaPXerG8o2oevM/cTuAjtJ++G8H2p35uyRaY/sRPNepHtRRirndzIzpxPwjt7MYXcdoPO4tHbZJCcnbZPum3XiZUrP499fKPzj0hG0PKzRpmwPac+OhubG2MbW6XLSkesvAnd3DfNha1Ai4nSX4VNJZeyrQQ/ch1BxpQRtHvVjTw3ZYb+L8Y4ibLsgxr0qNul4v4gkDugsxs/s+Hi7SLsv+/wVsm/3+vnZ9Wtk3+7yjux0LZYF3ZOqzYXJ2H3I1zfYySpbbi0GqSIu6CUpfZu/L0vz26H/J9W9I+2St/pl8jR/r7zjvPXvGXgZdcf/qYEM4Ev8X+BHrf8LVQD/dwjg/+D/4P/g/+D/jtL/+cP6v13y8H8fiY7/s+/h+V8Qbp7/hQL+7xDA/8H/wf/B/8H/HaX/84b1f7vk4f8+El3/9y6e/23+/w19D/7vEMD/wf/B/8H/wf8dpf+bDuv/dsnD/wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC8JX8BKJlLswBQAAA="|base64 -d | tar xvz)
           (cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do sudo  /tmp/routedns /tmp/$resfile & done  ) &
+          sudo service systemd-resolved stop || true
+          sleep 1
           (sudo dnsmasq -f -d --port 53 --dns-forward-max=150000 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv) & 
           sleep 2
-          #sudo service systemd-resolved stop || true
+          
           #(echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
           #sudo bash -c '( $(echo L3RtcC9kbnNwcm94eSAtLXBvcnQgNTMgLS1lZG5zIC11IGh0dHBzOi8vZG5zLm5leHRkbnMuaW8vM2QyY2I4IC11IHRsczovLzNkMmNiOC5kbnMubmV4dGRucy5pbyAtdSAyYTA3OmE4YzA6OjNkOjJjYjggLXUgMmEwNzphOGMwOjozZDoyY2I4IA==|base64 -d);echo " -f 1.1.1.1 -f 4.2.2.4 -f 4.2.2.2 -f 8.8.8.8 -f 9.9.9.9 -f 114.114.114 -f 8.8.4.4 -f 4.2.2.3 --port 5553")'  & 
           echo waiting for resolver
