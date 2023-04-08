@@ -215,7 +215,7 @@ jobs:
              
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
-             ) & sleep 2.3
+             ) & sleep 4.2
 
              [[ "$myoct" = "5" ]] && sleep 15
              bash -c 'sleep $(($RANDOM%5))'
