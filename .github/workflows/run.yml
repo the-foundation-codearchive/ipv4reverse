@@ -122,7 +122,7 @@ jobs:
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           #(cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
-          (cd /tmp/;wget -c https://github.com/cbuijs/routedns-binaries/raw/master/linux/amd64/routedns;chmod +x routedns )
+          (cd /tmp/;wget -q -c https://github.com/cbuijs/routedns-binaries/raw/master/linux/amd64/routedns;chmod +x routedns )
           #spawn resolver
           sudo service systemd-resolved stop || true
           (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
@@ -135,7 +135,7 @@ jobs:
           sleep 2
           timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true
           timeout 10 host test.command.lan 127.0.0.1 || true  
-          killall -9 dnsmasq routedns || true
+          sudo killall -9 dnsmasq routedns || true
           wait
 
       - name: Run thingy... 
