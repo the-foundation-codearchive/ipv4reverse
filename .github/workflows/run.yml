@@ -153,16 +153,16 @@ jobs:
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           #spawn resolver
           ( sudo service systemd-resolved stop || true;          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) ) || true &
-          (cd /tmp/; echo "H4sIAAAAAAAAA+2VO2/CMBCAmfMrLHZC/EigSFWXDp2qqmWrGNIkQCQ3Ro6DQFX/e8+hpeFREBIEKu7LYNkX31lwX6xVYZI4y91YjV2j3mXj+HhAEAg7ckr59xiU62WMeQ0qBBWMUdGBdcp93mkQ7wRn2aDITagJachwnugdFffF/ykmNTIht6T5bBvh/vGFRCobpqNChyZVGRkqTSZaTdM4zUYE4i01TXTrod9/IlJFoZTzpuO86iRXEgL5wHEI+Z26kVRFPJShTlrQYQMIhnEM4dzWHBszyXvttu2/LJkZO6aqzWMWvXU/7mD62YQdUN+oSEm7BZLYejLNTZIt6y2nbnmmVhFP1kpR1nE9eGiv6/t8PSu8b5d+jm2XVg/e3FrGRIeVgff3lan7/9cV/9mJPgCH+B94zPofUA/9r4Pr8/+mHv+3lbls/8257n/udxb+wxfA90R5//sC/a+DiqrZDPoAutAMnEpHL2R0VxWF2w2ae9VLs+JlVcRKtp7w13eW7lWVWJ5jW8JSud0JS8v+SHjun/viqPp/rvt/6T9jTIjF/c8D9L8O6vafH9v/zYToP4IgCIIgCIIgCIIgCIIgCIIgV80XI2ylUQAoAAA="|base64 -d | tar xvz)
-          (cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do sudo  /tmp/routedns /tmp/$resfile & done ) &
-          sudo dnsmasq -f -d --port 53 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv & 
+          (cd /tmp/; echo "H4sIAAAAAAAAA+2Xy27aQBSGWfspRs62HmbGV0aquumi3VRRmx1iYcY2WHI81nhAQVXfvcdQiJ0EokQNTcX5kWXm9p8zF/Nho1c2z+qWZnpJrb6tRn9fDBRFQXf3Off/3KNtPUjwgI94EPBABDyO+YhxP/TjEWFvkMsjrVqbGkJGVbrJzYmIz7X/p7KlrXLykbjfu4Pw+dsPonRdlIuVSW2pa1JoQxqj12VW1gsC7Z5e58b7cnNzTSqt0qrauM5Va/PcQAda53e2O02lJsu0JWmWmbxtCWcBFX5CecKpSJ7vL9iEdlcYUx6Fx/t/vV5HvUGMSz4pmExV9y1mMgwYk6IoZJGrRMZCnYg99EpZLqMJ2AQcHEIZsjCQWyOuZKwS7kwXRq+alpq0zvTtzLGbJiekW8pdjeuAk65gtVqonLr1HQTz4DFzP5BDwXrpsDgfFpU7c5zpwWhQoAfHmUMOmUP8pbVNK8fjbnL3kxz7mVDz5OcnKP5yYQRsq9VKV92QLi2ommttW2vSxuvZDTfPfSoDmMbMuRoksYtGhznIJPTdYbKCxVQEEZ1wCJDsOwxzs0eCzl8blEeCCsHg8mFqLwuqXh10sI5Hg8IWVyUc0nq334TcF+n2ifNWWfNgx7mIKYMPB9fHttC/q9pPpn9En7K36mX20P+oveP86x841EmZHv/FG/0BeAH/BYvCjv8RNCP/zyDkP/If+Y/8R/5fpnr8t+/g/X/P/zBkyP9zCPmP/Ef+I/+R/5epPv/f0/u/L5D/5xDyH/mP/Ef+I/9RKBQKhUKhLkO/AUCBXPUAKAAA"|base64 -d | tar xvz)
+          (cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do sudo  /tmp/routedns /tmp/$resfile & done  ) &
+          (sudo dnsmasq -f -d --port 53 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv) & 
           sleep 2
           #sudo service systemd-resolved stop || true
           #(echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
           #sudo bash -c '( $(echo L3RtcC9kbnNwcm94eSAtLXBvcnQgNTMgLS1lZG5zIC11IGh0dHBzOi8vZG5zLm5leHRkbnMuaW8vM2QyY2I4IC11IHRsczovLzNkMmNiOC5kbnMubmV4dGRucy5pbyAtdSAyYTA3OmE4YzA6OjNkOjJjYjggLXUgMmEwNzphOGMwOjozZDoyY2I4IA==|base64 -d);echo " -f 1.1.1.1 -f 4.2.2.4 -f 4.2.2.2 -f 8.8.8.8 -f 9.9.9.9 -f 114.114.114 -f 8.8.4.4 -f 4.2.2.3 --port 5553")'  & 
           echo waiting for resolver
           timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true 
-          timeout 10 host starting.command.lan 127.0.0.1 || true 
+          timeout 10 host starting.command.lan        127.0.0.1 || true 
       
           doneip=0
           doneoct=0
