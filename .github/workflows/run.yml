@@ -147,8 +147,8 @@ jobs:
           mkdir /tmp/tmp_${{ matrix.oone }}
           cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           #spawn resolver
-          apt update || true
-          apt-get -y --no-install-recommends dnsmasq-base 
+          sudo apt update || true
+          sudo apt-get -y --no-install-recommends dnsmasq-base 
           dnsmasq -f -d --port 53 --server="127.0.0.1#5553" --no-resolv & 
           sudo service systemd-resolved stop || true
           (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
