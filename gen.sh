@@ -32,8 +32,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
      test -e /tmp/req${octet_three}.${octet_two}.${octet_one}  && rm /tmp/req${octet_three}.${octet_two}.${octet_one} &
      find /tmp/tmp_${octet_one}/lists/ -empty -delete
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && (ls -1 /tmp/out${octet_three}.${octet_two}.${octet_one}/|grep out -q ) && ( 
-         cat /tmp/out${octet_three}.${octet_two}.${octet_one}/* 2>/dev/null |grep PTR|grep -v PTR$ |(grep -v ^$|while read a ;do 
-                       echo $(date +%s)"|$a" ;done ) >  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
+         cat /tmp/out${octet_three}.${octet_two}.${octet_one}/* 2>/dev/null |grep "|"| >  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
      )
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) #&   
