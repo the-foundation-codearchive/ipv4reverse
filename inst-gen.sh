@@ -8,3 +8,5 @@ echo "aW1wb3J0IHN5cwppbXBvcnQgb3MKaW1wb3J0IGpzb24KaW1wb3J0IGFzeW5jaW8KaW1wb3J0IG
 
 sudo pip3 install aiohttp || true
 pip3 install aiohttp || true
+sudo pip3 install requests || true
+pip3 install requests || true
