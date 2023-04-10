@@ -171,7 +171,7 @@ jobs:
           #timeout 10 host starting.command.lan        127.0.0.1 || true 
           #timeout 10 host -t ptr 9.9.9.9.in-addr.arpa  || true 
           #timeout 10 host starting.command.lan         || true          
-          bash -c "timeout 10 dig -p 5553  starting.command.lan @127.0.0.1"|| true 
+          #bash -c "timeout 10 dig -p 5553  starting.command.lan @127.0.0.1"|| true 
           doneip=0
           doneoct=0
 
@@ -198,8 +198,9 @@ jobs:
                 ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
                 #find lists/ -mindepth 1 -delete;
                 #( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
+                ( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
                 #echo "act: finished in "$(pwd);
-                exit 0;
+                # exit 0;
                )
              sleep 1; # prevent /0
              octend=$(date -u +%s)
