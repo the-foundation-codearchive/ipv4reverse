@@ -24,7 +24,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
      mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
      ########################################/tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
 #     /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one}/res --processes 4 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
-     (cd /tmp/out${octet_three}.${octet_two}.${octet_one}/; proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v -e proxychains -e DeprecationWarning  -e get_event_loop)
+     (cd /tmp/out${octet_three}.${octet_two}.${octet_one}/; proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop)
      find /tmp/out${octet_three}.${octet_two}.${octet_one}/ -type f |wc -l |grep -q ^0$ || (
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}/ && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}/*
      test -e /tmp/log${octet_three}.${octet_two}.${octet_one}  && (grep -e SERVFAIL -e REFUSE -e NXDOMAIN -e OK /tmp/log${octet_three}.${octet_two}.${octet_one}|sed 's/^/ip4_'${octet_one}.${octet_two}.${octet_three}'| /g'  ; rm /tmp/log${octet_three}.${octet_two}.${octet_one}  ) 
