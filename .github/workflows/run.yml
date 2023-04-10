@@ -156,15 +156,15 @@ jobs:
           #(echo "W1Jlc29sdmVdCkROUz0gMTYyLjIyMC4yMjMuMjMjM2QyY2I4LmRucy5uZXh0ZG5zLmlvIDIwNy4yNDYuOTEuMTg4IzNkMmNiOC5kbnMubmV4dGRucy5pbyAgMjAwMToxOWYwOjU6NjYzZDo1NDAwOjJmZjpmZWNlOjJmMTQjM2QyY2I4LmRucy5uZXh0ZG5zLmlvIDJhMDA6MTFjMDo0Njo0Ojo1IzNkMmNiOC5kbnMubmV4dGRucy5pbyAKRmFsbGJhY2tETlM9IDE2Mi4yMjAuMjIzLjIzIzNkMmNiOC5kbnMubmV4dGRucy5pbyAyMDcuMjQ2LjkxLjE4OCMzZDJjYjguZG5zLm5leHRkbnMuaW8gIDIwMDE6MTlmMDo1OjY2M2Q6NTQwMDoyZmY6ZmVjZToyZjE0IzNkMmNiOC5kbnMubmV4dGRucy5pbyAyYTAwOjExYzA6NDY6NDo6NSMzZDJjYjguZG5zLm5leHRkbnMuaW8gCkRvbWFpbnM9fi4KRE5TT3ZlclRMUz15ZXMKRE5TU0VDPW5vCg=="|base64 -d |sudo tee  /etc/systemd/resolved.conf.d/dot.conf)
           #sudo service systemd-resolved restart
 
-          (cd /tmp/; echo "H4sIAAAAAAAAA+2VTY+bMBCGc+ZXWPTaOLb5jKWqlx7aS7Vq9xblQAwkSCxGxok2qvrfOyTtLpCwm101WrWaByGYwZ4ZXsbG6K3N0qqhqd5Qq+/Kyd+HAWHot1ePc+/3NTz4D/chm3Df574IgiACP/eCgE8Iu0ItJ2wbmxhCJmWyz8wTGZ97/o9iC1tm5ANxv7WN8Onrd6J0lRfrrUlsoSuSa0Nqo3dFWlRrAs+nepeZ6efb2xtSapWU5d513jU2ywwMoFV2b9tuKjTZJA1J0tRkTUM486nwYspjTkX8/HjB5rQ9g4jyMBgf/+VmF3YmMS75PGcyUe1dxGTgMyZFnss8U7GMhHoidz9WwjIZziGMzyFCIAMW+PIQiCsZqZg7i7XR27qhJqlSfbd07L7OCGmlPHpAFgilS5CrAe/Cre4h2xTWmfuePBh2mvTNVd9U7tIZCdPO7FirnqV6VtqxLsm4eEi5dDoG7eReOuRBLXjnjbV1I2ezVtBHYWdeKtQq/vERzJ8uzIBWslrpsp3SKgGulda2sSapp51w/YZxz9ewum4NgkVU+CGdcyhjrAZ1ZR1CQYVgcHqgx0gN6Zt/C3vSD8dktF+CjAPvYrmHBdqRzMMueHnmociXZh5++1dkHkh7JjOsv7KAPas6LkZCHk162ICn27QeFMJFRBkcXMIP9eSFYHzr+vNG3R3rXHirXhYexo+Gd5y3/t8hCIIgCIIgCIIgCIIgCIIgCIIgCIIgyP/IL2jzM2sAKAAA"|base64 -d | tar xvz)
-          sudo service systemd-resolved stop || true
+          #(cd /tmp/; echo "H4sIAAAAAAAAA+2VTY+bMBCGc+ZXWPTaOLb5jKWqlx7aS7Vq9xblQAwkSCxGxok2qvrfOyTtLpCwm101WrWaByGYwZ4ZXsbG6K3N0qqhqd5Qq+/Kyd+HAWHot1ePc+/3NTz4D/chm3Df574IgiACP/eCgE8Iu0ItJ2wbmxhCJmWyz8wTGZ97/o9iC1tm5ANxv7WN8Onrd6J0lRfrrUlsoSuSa0Nqo3dFWlRrAs+nepeZ6efb2xtSapWU5d513jU2ywwMoFV2b9tuKjTZJA1J0tRkTUM486nwYspjTkX8/HjB5rQ9g4jyMBgf/+VmF3YmMS75PGcyUe1dxGTgMyZFnss8U7GMhHoidz9WwjIZziGMzyFCIAMW+PIQiCsZqZg7i7XR27qhJqlSfbd07L7OCGmlPHpAFgilS5CrAe/Cre4h2xTWmfuePBh2mvTNVd9U7tIZCdPO7FirnqV6VtqxLsm4eEi5dDoG7eReOuRBLXjnjbV1I2ezVtBHYWdeKtQq/vERzJ8uzIBWslrpsp3SKgGulda2sSapp51w/YZxz9ewum4NgkVU+CGdcyhjrAZ1ZR1CQYVgcHqgx0gN6Zt/C3vSD8dktF+CjAPvYrmHBdqRzMMueHnmociXZh5++1dkHkh7JjOsv7KAPas6LkZCHk162ICn27QeFMJFRBkcXMIP9eSFYHzr+vNG3R3rXHirXhYexo+Gd5y3/t8hCIIgCIIgCIIgCIIgCIIgCIIgCIIgyP/IL2jzM2sAKAAA"|base64 -d | tar xvz)
+          #sudo service systemd-resolved stop || true
           #(cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do sudo  /tmp/routedns /tmp/$resfile & done  ) &
-          (cd /tmp/; for resfile in routedns.doh.toml ;do sudo  /tmp/routedns /tmp/$resfile & done  ) &
+          #(cd /tmp/; for resfile in routedns.doh.toml ;do sudo  /tmp/routedns /tmp/$resfile & done  ) &
           ##sleep 1
           ##(sudo dnsmasq -f -d --port 53 --dns-forward-max=150000 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv) & 
           #sleep 2
           #
-          ##(echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
+          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
           ##sudo bash -c '( $(echo L3RtcC9kbnNwcm94eSAtLXBvcnQgNTMgLS1lZG5zIC11IGh0dHBzOi8vZG5zLm5leHRkbnMuaW8vM2QyY2I4IC11IHRsczovLzNkMmNiOC5kbnMubmV4dGRucy5pbyAtdSAyYTA3OmE4YzA6OjNkOjJjYjggLXUgMmEwNzphOGMwOjozZDoyY2I4IA==|base64 -d);echo " -f 1.1.1.1 -f 4.2.2.4 -f 4.2.2.2 -f 8.8.8.8 -f 9.9.9.9 -f 114.114.114 -f 8.8.4.4 -f 4.2.2.3 --port 5553")'  & 
           #echo waiting for resolver
           #timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true 
