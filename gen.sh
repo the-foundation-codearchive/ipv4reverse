@@ -36,9 +36,9 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
                        echo $(date +%s)"|$a" ;done ) >  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
      )
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
-      ) &   
+      ) #&   
 
-sleep 66
+#sleep 66
 sleep 0.$(($RANDOM%9))
 
 
