@@ -36,7 +36,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
 #     )
      (  
          cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
-         proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v -e ERROR_1 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
+         proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v -e ERROR_1 -e ERROR_2 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
          test -e out.${octet_one}.${octet_two}.${octet_three} && mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three}
      ) 
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
