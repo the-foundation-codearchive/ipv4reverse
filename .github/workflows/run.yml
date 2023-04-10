@@ -197,7 +197,7 @@ jobs:
                 test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log";
                 ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
                 #find lists/ -mindepth 1 -delete;
-                ( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
+                #( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
                 #echo "act: finished in "$(pwd);
                 exit 0;
                )
@@ -215,7 +215,7 @@ jobs:
              
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
-             ) & sleep 4.2
+             )    # & sleep 4.2
 
              [[ "$myoct" = "5" ]] && sleep 10
              bash -c 'sleep $(($RANDOM%5))'
