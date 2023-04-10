@@ -13,6 +13,6 @@ pip3 install requests || true
  
 sudo apt-get install proxychains4 || sudo apt-get install proxychains3 || true 
 sudo apt-get install proxychains || true
-echo "c3RyaWN0X2NoYWluCnF1aWV0X21vZGUKcHJveHlfZG5zIAp0Y3BfcmVhZF90aW1lX291dCAxNTAwMAp0Y3BfY29ubmVjdF90aW1lX291dCA4MDAwCltQcm94eUxpc3RdCnNvY2tzNCAJMTI3LjAuMC4xIDkwNTAK"|base64 -d |sudo tee /etc/proxychains.conf
+echo "c3RyaWN0X2NoYWluCnF1aWV0X21vZGUKcHJveHlfZG5zIAp0Y3BfcmVhZF90aW1lX291dCAxNTAwMAp0Y3BfY29ubmVjdF90aW1lX291dCA4MDAwCltQcm94eUxpc3RdCnNvY2tzNCAJMTI3LjAuMC4xIDkwNTAK"|base64 -d |grep -v proxy_dns |sudo tee /etc/proxychains.conf
 
 exit 0
