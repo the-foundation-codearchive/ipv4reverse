@@ -184,6 +184,8 @@ jobs:
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${{ matrix.oone }}/${myoct} "$(uptime |sed 's/.\+ up/up/g') >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} "$(uptime |sed 's/.\+ up/up/g') >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6  ]]   && (sleep  5 ;  echo "throttled 5 s FOR ${{ matrix.oone }}/${myoct} "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(sudo netstat -puteen|wc -l ) -ge 4096 ]]    && (sleep 20  ;  echo "PAR_throttled 20s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen|wc -l ) >&2 )
+            [[ $(sudo netstat -puteen|wc -l ) -ge 2048 ]]    && (sleep 10  ;  echo "PAR_throttled 10s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen|wc -l ) >&2 )
              octstart=$(date -u +%s)
              doneip=$(($myoct*255))
              (
