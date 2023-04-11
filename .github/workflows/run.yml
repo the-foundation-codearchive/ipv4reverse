@@ -144,7 +144,7 @@ jobs:
           startdir=$(pwd)
           docker run -d -p 9050:9050  ghcr.io/y0l0-os/tor-load-balancer-docker:main tlb
           touch /dev/shm/.process_running
-          while (test -e  /dev/shm/.process_running );do  sleep 30;echo -n "$(uptime) .. CONNs: $(netstat -puteen|wc -l ) PROCS:" ;ps -AcF |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
+          while (test -e  /dev/shm/.process_running );do  sleep 30;echo -n "$(uptime) .. CONNs: $(netstat -puteen|wc -l ) PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
           uptime
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
