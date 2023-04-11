@@ -145,7 +145,7 @@ jobs:
           date +%s > /tmp/.buildstart
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
-          ((echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  "${{ secrets.LOGTOINFLUXURL }}/api/v2/write?bucket=buildstatus&precision=ns";echo TOKEN=true;echo PROXYFLUX=socks5://127.0.0.1:9050) | suoo tee /root/.picoinflux.conf >/dev/null ) &
+          (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  "${{ secrets.LOGTOINFLUXURL }}/api/v2/write?bucket=buildstatus&precision=ns";echo TOKEN=true;echo PROXYFLUX=socks5://127.0.0.1:9050) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
           mkdir ~/
           docker run -d -p 9050:9050  ghcr.io/y0l0-os/tor-load-balancer-docker:main tlb
