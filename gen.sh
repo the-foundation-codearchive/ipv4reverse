@@ -2,6 +2,7 @@
 
 octet_one=$1
 octet_two=$2
+startdir="$3"
 uptime
 #octet_three=$3
 test -e /tmp/.privnet.py || (
@@ -15,10 +16,11 @@ for octet_three in 0 $(seq 1 254);do
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 15 ]]   && (sleep 23 ;  echo "throttled 23s FOR ${octet_one}.${octet_two}.${octet_three} "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${octet_one}.${octet_two}.${octet_three} "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${octet_one}.${octet_two}.${octet_three} "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
-            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 8 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${octet_one}.${octet_two}.${octet_three} "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 8 ]]    && (sleep 10 ;  echo "throttled 10s FOR ${octet_one}.${octet_two}.${octet_three} "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${octet_one}.${octet_two}.${octet_three} "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
 
-test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
+#test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
+test-e "Sstartdir/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "Sstartdir/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
 ##     echo  {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
 #     mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
@@ -35,7 +37,8 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
 #         cat /tmp/out${octet_three}.${octet_two}.${octet_one}/* 2>/dev/null |grep "|"| >  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} )
 #     )
      (  
-         cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
+         #cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
+         cd Sstartdir/upload/lists/${octet_one}/${octet_one}.${octet_two}
          proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v -e ERROR_1 -e ERROR_2 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
          test -e out.${octet_one}.${octet_two}.${octet_three} && mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three}
      ) 

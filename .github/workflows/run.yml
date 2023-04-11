@@ -141,6 +141,7 @@ jobs:
       - name: Run thingy... 
         run: |
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+          startdir=$(pwd)
           docker run -d -p 9050:9050  ghcr.io/y0l0-os/tor-load-balancer-docker:main tlb
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 30;echo -n "$(uptime) .. CONNs: $(netstat -puteen|wc -l ) PROCS:" ;ps -AcF |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
@@ -151,7 +152,7 @@ jobs:
           echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
           #bash /tmp/git-new.sh ${{ matrix.oone }}
           mkdir /tmp/tmp_${{ matrix.oone }}
-          cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
+          #cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           #spawn resolver
           #( sudo service systemd-resolved stop || true;          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) ) || true &   
           #(echo "W1Jlc29sdmVdCkROUz0gMTYyLjIyMC4yMjMuMjMjM2QyY2I4LmRucy5uZXh0ZG5zLmlvIDIwNy4yNDYuOTEuMTg4IzNkMmNiOC5kbnMubmV4dGRucy5pbyAgMjAwMToxOWYwOjU6NjYzZDo1NDAwOjJmZjpmZWNlOjJmMTQjM2QyY2I4LmRucy5uZXh0ZG5zLmlvIDJhMDA6MTFjMDo0Njo0Ojo1IzNkMmNiOC5kbnMubmV4dGRucy5pbyAKRmFsbGJhY2tETlM9IDE2Mi4yMjAuMjIzLjIzIzNkMmNiOC5kbnMubmV4dGRucy5pbyAyMDcuMjQ2LjkxLjE4OCMzZDJjYjguZG5zLm5leHRkbnMuaW8gIDIwMDE6MTlmMDo1OjY2M2Q6NTQwMDoyZmY6ZmVjZToyZjE0IzNkMmNiOC5kbnMubmV4dGRucy5pbyAyYTAwOjExYzA6NDY6NDo6NSMzZDJjYjguZG5zLm5leHRkbnMuaW8gCkRvbWFpbnM9fi4KRE5TT3ZlclRMUz15ZXMKRE5TU0VDPW5vCg=="|base64 -d |sudo tee  /etc/systemd/resolved.conf.d/dot.conf)
@@ -193,13 +194,13 @@ jobs:
                (
                 source /dev/shm/.tokenv || true ;
                 echo "starting_${{ matrix.oone }} $myoct .. ";
-                cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1;
+               # cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1;
                 pwd;
                 test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log";
                 ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
                 #find lists/ -mindepth 1 -delete;
                 #( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
-                ( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
+                ( ( cd $startdir; bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}"  "$startdir"|| true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
                 #echo "act: finished in "$(pwd);
                 # exit 0;
                )
@@ -230,7 +231,7 @@ jobs:
           pwd
           echo thingy done
           mkdir upload
-          mv /tmp/tmp_${{ matrix.oone }}/lists upload/
+          #mv /tmp/tmp_${{ matrix.oone }}/lists upload/
           exit 0
         env:
             PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
