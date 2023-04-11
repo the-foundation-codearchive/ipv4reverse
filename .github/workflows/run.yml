@@ -206,7 +206,7 @@ jobs:
                 source /dev/shm/.tokenv || true ;
                 echo "starting_${{ matrix.oone }} $myoct .. ";
                # cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1;
-                pwd;
+                #pwd;
                 test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log";
                 ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
                 #find lists/ -mindepth 1 -delete;
