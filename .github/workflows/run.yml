@@ -145,7 +145,7 @@ jobs:
           date +%s > /tmp/.buildstart
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
-          (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  "${{ secrets.LOGTOINFLUXURL }}/api/v2/write?bucket=buildstatus&precision=ns";echo TOKEN=true;echo PROXYFLUX=socks5h://127.0.0.1:9050) | suoo tee .picoinflux.conf ) &
+          (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  "${{ secrets.LOGTOINFLUXURL }}/api/v2/write?bucket=buildstatus&precision=ns";echo TOKEN=true;echo PROXYFLUX=socks5://127.0.0.1:9050) | suoo tee .picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
           mkdir ~/
           docker run -d -p 9050:9050  ghcr.io/y0l0-os/tor-load-balancer-docker:main tlb
@@ -186,21 +186,21 @@ jobs:
           export INFLUX_MEASUREMENT=log
           ( ( while (true);do cat /tmp/logpipe;sleep 2;done )| while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog FALSE $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  info >/dev/null ) &
           (
-            ( while (true);do sudo  /bin/bash /etc/custom/picoinflux/picoinflux.sh ;sleep 120;done ) &
+          ( while (true);do sudo  /bin/bash /etc/custom/picoinflux/picoinflux.sh ;sleep 120;done ) &
           doneip=0
           doneoct=0
 
           opstart=$(date -u +%s)
           for myoct in $(seq 0 255);do 
-            #[[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 20 ]]   && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(cat /proc/loadavg) >&2 )
-            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 15 ]]   && (sleep 20 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
-            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;  echo "throttled 15s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
-            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 10 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
-            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6  ]]   && (sleep  5 ;  echo "throttled 5 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 3072 ]]    && (sleep 60  ;  echo "PAR_throttled 60s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 2048 ]]    && (sleep 42  ;  echo "PAR_throttled 42s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1536 ]]    && (sleep 23  ;  echo "PAR_throttled 23s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1024 ]]    && (sleep  5  ;  echo "PAR_throttled  5s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            #[[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 20 ]]  && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(cat /proc/loadavg) >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 15 ]]   && (sleep 20 ;   echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;   echo "throttled 15s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 10 ;   echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6  ]]   && (sleep  5 ;   echo "throttled 5 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 3072 ]]     && (sleep 60  ;  echo "PAR_throttled 60s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 2048 ]]     && (sleep 42  ;  echo "PAR_throttled 42s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1536 ]]     && (sleep 23  ;  echo "PAR_throttled 23s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1024 ]]     && (sleep  5  ;  echo "PAR_throttled  5s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
 
              octstart=$(date -u +%s)
              doneip=$(($myoct*255))
