@@ -20,8 +20,8 @@ for octet_three in 0 $(seq 1 254);do
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 8 ]]    && (sleep 10 ;  echo "throttled 10s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(sudo netstat -puteen 2>/dev/null  |wc -l ) -ge 4096 ]]    && (sleep 42  ;  echo "GEN_throttled 42s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null  |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null  |wc -l ) -ge 2048 ]]    && (sleep 13  ;  echo "GEN_throttled 13s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null  |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null  |wc -l ) -ge 1024 ]]    && (sleep 5   ;  echo "GEN_throttled  5s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null  |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null  |wc -l ) -ge 3072 ]]    && (sleep 13  ;  echo "GEN_throttled 13s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null  |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null  |wc -l ) -ge 2048 ]]    && (sleep 5   ;  echo "GEN_throttled  5s s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null  |wc -l ) >&2 )
 #test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
 test -e "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
