@@ -180,7 +180,7 @@ jobs:
           export INFLUX_MEASUREMENT=buildtime            
           echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')
           export INFLUX_MEASUREMENT=log
-          (while (true);do cat /tmp/logpipe;sleep 2;done | while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog FALSE $(echo ${{ github.job }}|sed 's/build-//g') "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g') info ) &
+          ( ( while (true);do cat /tmp/logpipe;sleep 2;done )| while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog FALSE $(echo ${{ github.job }}|sed 's/build-//g') "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g') info >/dev/null ) &
           doneip=0
           doneoct=0
 
