@@ -140,6 +140,7 @@ jobs:
 
       - name: Run thingy... 
         run: |
+          date +%s > /tmp/.buildstart
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           startdir=$(pwd)
           docker run -d -p 9050:9050  ghcr.io/y0l0-os/tor-load-balancer-docker:main tlb
@@ -174,6 +175,10 @@ jobs:
           #timeout 10 host -t ptr 9.9.9.9.in-addr.arpa  || true 
           #timeout 10 host starting.command.lan         || true          
           #bash -c "timeout 10 dig -p 5553  starting.command.lan @127.0.0.1"|| true 
+          export INFLUX_MEASUREMENT=buildtime            
+          echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')
+          export INFLUX_MEASUREMENT=log
+          while (trueo);do cat /tmp/logpipe;done | while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog FALSE $(echo ${{ github.job }}|sed 's/build-//g') "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g') info &
           doneip=0
           doneoct=0
 
@@ -202,7 +207,7 @@ jobs:
                 ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
                 #find lists/ -mindepth 1 -delete;
                 #( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
-                ( ( cd $startdir; bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}"  "$startdir"|| true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
+                ( ( cd $startdir; bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}"  "$startdir"|| true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" );
                 #echo "act: finished in "$(pwd);
                 # exit 0;
                )
@@ -224,12 +229,14 @@ jobs:
              #sleep 0.42
              [[ "$myoct" = "5" ]] && sleep 23
              bash -c 'sleep $(($RANDOM%5))'
-          done
+          done 2>&1 | tee  /tmp/logpipe 
           echo "all spawned"
           ## wait for max 30 min to complete job)
           for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
           echo finished waiting
           #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
+          export INFLUX_MEASUREMENT=buildtime            
+          bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')
           pwd
           echo thingy done
           mkdir upload
