@@ -20,7 +20,7 @@ for octet_three in 0 $(seq 1 254);do
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6 ]]    && (sleep 5  ;  echo "throttled 5 s FOR ${octet_one}.${octet_two}.${octet_three} "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
 
 #test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
-test-e "Sstartdir/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "Sstartdir/upload/lists/${octet_one}/${octet_one}.${octet_two}"
+test -e "Sstartdir/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "Sstartdir/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
 ##     echo  {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
 #     mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
