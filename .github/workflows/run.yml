@@ -122,6 +122,7 @@ jobs:
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           git clone https://gitlab.com/the-foundation/bash-logger.git /tmp/bash-logger & 
+          ( mkdir  -p /etc/custom; git clone https://github.com/TheFoundation/picoinflux.git  /etc/custom/picoinflux) &
           #(cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
           #(cd /tmp/;wget -q -c https://github.com/cbuijs/routedns-binaries/raw/master/linux/amd64/routedns;chmod +x routedns )
           ####spawn resolver
@@ -143,7 +144,10 @@ jobs:
         run: |
           date +%s > /tmp/.buildstart
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+          echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
+          (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  "${{ secrets.LOGTOINFLUXURL }}/api/v2/write?bucket=buildstatus&precision=ns";echo TOKEN=true;echo PROXYFLUX=socks5h://127.0.0.1:9050) | suoo tee .picoinflux.conf ) &
           startdir=$(pwd)
+          mkdir ~/
           docker run -d -p 9050:9050  ghcr.io/y0l0-os/tor-load-balancer-docker:main tlb
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 30;echo -n "$(uptime) .. CONNs: $(netstat -puteen 2>/dev/null |wc -l ) PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
@@ -152,7 +156,7 @@ jobs:
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
-          #bash /tmp/git-new.sh ${{ matrix.oone }}
+          #bash /tmp/git-new.sh 
           mkdir /tmp/tmp_${{ matrix.oone }}
           #cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
           #spawn resolver
@@ -181,6 +185,8 @@ jobs:
           echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')
           export INFLUX_MEASUREMENT=log
           ( ( while (true);do cat /tmp/logpipe;sleep 2;done )| while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog FALSE $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  info >/dev/null ) &
+          (
+            ( while (true);do sudo  /bin/bash /etc/custom/picoinflux/picoinflux.sh ;sleep 120;done ) &
           doneip=0
           doneoct=0
 
@@ -234,7 +240,7 @@ jobs:
              #sleep 0.42
              [[ "$myoct" = "5" ]] && sleep 23
              bash -c 'sleep $(($RANDOM%5))'
-          done 2>&1 | tee  /tmp/logpipe 
+          done 2>&1 ) | tee  /tmp/logpipe 
           echo "all spawned"
           ## wait for max 30 min to complete job)
           for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
@@ -303,9 +309,9 @@ jobs:
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
-          (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
-          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
-          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          #(curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
+          #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
+          #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           wait
