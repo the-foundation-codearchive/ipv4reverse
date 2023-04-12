@@ -187,7 +187,7 @@ jobs:
           export INFLUX_MEASUREMENT=log
           ( ( while (true);do cat /tmp/logpipe;sleep 2;done )| while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog FALSE $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  info >/dev/null ) &
           (
-          ( while (true);do sudo  /bin/sh -c "/bin/bash /etc/custom/picoinflux/picoinflux.sh" ;sleep 120;done ) &
+          ( while (true);do sudo  /bin/sh -c "export HOME=/root;/bin/bash /etc/custom/picoinflux/picoinflux.sh" ;sleep 120;done ) &
           doneip=0
           doneoct=0
 
@@ -204,6 +204,7 @@ jobs:
             [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 512  ]]     && (sleep  1  ;  echo "PAR_conn_throttled  1 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
              octstart=$(date -u +%s)
              doneip=$(($myoct*255))
+             ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }} ) &
              (
 
              #(cd "/tmp/tmp_${{ matrix.oone }}";bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
