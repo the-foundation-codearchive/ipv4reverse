@@ -19,10 +19,10 @@ for octet_three in 0 $(seq 1 254);do
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 15  ;  echo "GEN_load_throttled 15 s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 8 ]]    && (sleep 10  ;  echo "GEN_load_throttled 10 s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6 ]]    && (sleep 5   ;  echo "GEN_load_throttled 5  s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
-            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 1280 ]] ) ;do echo "GEN_sleeping until less than 1280 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2;sleep 5;done
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1024 ]]     && (sleep  5  ;  echo "GEN_conn_throttled  5 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 768  ]]     && (sleep  3  ;  echo "GEN_conn_throttled  3 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 512  ]]     && (sleep  1  ;  echo "GEN_conn_throttled  1 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 1512 ]] ) ;do echo "GEN_sleeping until less than 1512 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2;sleep 5;done
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1024 ]]     && (sleep  7  ;  echo "GEN_conn_throttled  7 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 768  ]]     && (sleep  5  ;  echo "GEN_conn_throttled  5 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 512  ]]     && (sleep  3  ;  echo "GEN_conn_throttled  3 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
 #test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
 test -e "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
