@@ -126,7 +126,7 @@ jobs:
           ( mkdir  -p /etc/custom; git clone https://github.com/TheFoundation/picoinflux.git  /etc/custom/picoinflux) &
           #(cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
           #(cd /tmp/;wget -q -c https://github.com/cbuijs/routedns-binaries/raw/master/linux/amd64/routedns;chmod +x routedns )
-          ####spawn resolver
+          ####spawn resolver.
           ####sudo service systemd-resolved stop || true
           ####(echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
           ###sudo apt update || true
