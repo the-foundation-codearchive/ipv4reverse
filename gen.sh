@@ -30,7 +30,12 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
 #     mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
 #     ########################################/tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
 ##     /tmp/dns --outfile /tmp/out${octet_three}.${octet_two}.${octet_one}/res --processes 4 -r /tmp/resolvers  --type PTR /tmp/req${octet_three}.${octet_two}.${octet_one} 2>/tmp/log${octet_three}.${octet_two}.${octet_one} ;
-#     (cd /tmp/out${octet_three}.${octet_two}.${octet_one}/; proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v -e ERROR_1 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop)
+#     (cd /tmp/out${octet_three}.${octet_two}.${octet_one}/; 
+                         (
+
+                            [[ $(($octet_three%2)) -eq 0 ]] || proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
+                            [[ $(($octet_three%2)) -eq 0 ]] &&             python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
+                         ) |grep -v -e ERROR_1 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop)
 #     test -e /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}/ || mkdir -p /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}/
 #     find /tmp/out${octet_three}.${octet_two}.${octet_one}/ -type f |wc -l |grep -q ^0$ || (
 #     test -e /tmp/out${octet_three}.${octet_two}.${octet_one}/ && wc -l /tmp/out${octet_three}.${octet_two}.${octet_one}/*
