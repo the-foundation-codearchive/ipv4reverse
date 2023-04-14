@@ -208,9 +208,9 @@ jobs:
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;   echo "PAR_load_throttled 15 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 10 ;   echo "PAR_load_throttled 10 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6  ]]   && (sleep  5 ;   echo "PAR_load_throttled 5  s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
-            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 1111 ]] ) ;do echo "PAR_sleeping until less than 1111 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2;sleep 10;done
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1024 ]]     && (sleep  9  ;  echo "PAR_conn_throttled  7 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 768  ]]     && (sleep  7  ;  echo "PAR_conn_throttled  9 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 1024 ]] ) ;do echo "PAR_sleeping until less than 1024 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2;sleep 10;done
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 768 ]]     && (sleep  9  ;  echo "PAR_conn_throttled  7 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 666  ]]     && (sleep  7  ;  echo "PAR_conn_throttled  9 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
             [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 512  ]]     && (sleep  3  ;  echo "PAR_conn_throttled  3 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
             [[ $LBCONN -ge 666 ]]                                          && (sleep 7  ;   echo "PAR_LBCONN_throttled 7 s FOR ${{ matrix.oone }}/${myoct} LBCONNs: $LBCONN MYCONNs:"$(uptime |sed 's/.\+ up/up/g') >&2 )
 
