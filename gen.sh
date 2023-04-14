@@ -10,6 +10,7 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 )
 #for octet_two in 0 $(seq 1 254);do 
 #octet_two
+echo "#######################################"
 echo "running FOR ${octet_one}/${octet_two} IN ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 
 for octet_three in 0 $(seq 1 254);do 
