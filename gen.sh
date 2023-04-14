@@ -44,7 +44,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          #cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          (
-            [[ $(($octet_three%3)) -eq 0 ]] || &proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
+            [[ $(($octet_three%3)) -eq 0 ]] ||  proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
             [[ $(($octet_three%3)) -eq 0 ]] &&              python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1
          
          ) |grep -v -e ERROR_1 -e ERROR_2 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
