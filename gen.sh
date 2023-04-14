@@ -1,4 +1,5 @@
 ##!/bin/bash
+source /dev/shm/.tokenv || true 
 
 octet_one=$1
 octet_two=$2
@@ -46,6 +47,10 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          #cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          (
+            mystart=$(date -u +%s)
+            export INFLUX_MEASUREMENT=buildtime            
+            echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus FALSE buildtime "${LOGTOINFLUXTOKEN}" $STATSTARGET &
+            
             dohdirect="no"
             ## 1/3 of req are sent direct
             [[ $(($octet_three%3)) -eq 0 ]] && dohdirect="yes"
@@ -55,6 +60,10 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
 
             [[ "${dohdirect}" = "yes" ]]  ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
             [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1
+            myend=$(date -u +%s)
+            export INFLUX_MEASUREMENT=buildtime            
+            echo $(($myend-$mystart))|bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus FALSE buildtime "${LOGTOINFLUXTOKEN}" $STATSTARGET &
+            
          ) |grep -v -e ERROR_1 -e ERROR_2 -e ERROR_1 -e ERROR_3 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
          test -e out.${octet_one}.${octet_two}.${octet_three} && mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three}
      ) 
