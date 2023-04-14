@@ -47,9 +47,9 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          (
             dohdirect="no"
-            ## two  third are sent direct
+            ## 1/3 of req are sent direct
             [[ $(($octet_three%3)) -eq 0 ]] && dohdirect="yes"
-            [[ $(($octet_three%3)) -eq 0 ]] && dohdirect="no"
+            [[ $(($octet_three%3)) -eq 0 ]] || dohdirect="no"
             ## but only with not too many connections
             [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1111 ]] && dohdirect="no"
 
