@@ -44,9 +44,15 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          #cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          (
-            [[ $(($octet_three%3)) -eq 0 ]] ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
-            [[ $(($octet_three%3)) -eq 0 ]] &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1
-         
+            dohdirect="no"
+            ## two  third are sent direct
+            [[ $(($octet_three%3)) -eq 0 ]] && dohdirect="yes"
+            [[ $(($octet_three%3)) -eq 0 ]] && dohdirect="no"
+            ## but only with not too many connections
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1111 ]] && dohdirect="no"
+
+            [[ "${dohdirect}" = "yes" ]]  ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
+            [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1
          ) |grep -v -e ERROR_1 -e ERROR_2 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
          test -e out.${octet_one}.${octet_two}.${octet_three} && mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three}
      ) 
