@@ -24,8 +24,8 @@ for octet_three in 0 $(seq 1 254);do
             while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 888 ]] ) ;do 
                 echo "GEN_sleeping until less than 888 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2;sleep 10;done
             #[[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 888  ]]     && (sleep 12  ;  echo "GEN_conn_throttled 12 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 888  ]]     && (sleep  4  ;  echo "GEN_conn_throttled  4 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 777  ]]     && (sleep  3  ;  echo "GEN_conn_throttled  3 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 666  ]]     && (sleep  4  ;  echo "GEN_conn_throttled  4 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 512  ]]     && (sleep  3  ;  echo "GEN_conn_throttled  3 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
 #test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
 test -e "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
@@ -62,7 +62,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1
             myend=$(date -u +%s)
             export INFLUX_MEASUREMENT=buildtime            
-            echo $(($myend-$mystart))|bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
+            echo $(($myend-$mystart)) |bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
             
          ) |grep -v -e ERROR_1 -e ERROR_2 -e ERROR_1 -e ERROR_3 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
          test -e out.${octet_one}.${octet_two}.${octet_three} && mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three}
@@ -70,7 +70,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) #&   
 
-#sleep 66
+sleep 3
 sleep 0.$(($RANDOM%9))
 
 
