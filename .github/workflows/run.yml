@@ -153,7 +153,9 @@ jobs:
           startdir=$(pwd)
           docker run -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
           touch /dev/shm/.process_running
-          while (test -e  /dev/shm/.process_running );do  sleep 30;echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
+          while (test -e  /dev/shm/.process_running );do  sleep 90;
+              LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
+               echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) | LBCONNs: $LBCONN |PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
           uptime
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
@@ -197,7 +199,7 @@ jobs:
           opstart=$(date -u +%s)
           for myoct in $(seq 0 255);do 
             ( LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
-              echo "LB:CONN: $LBCONN"
+              #echo "LB:CONN: $LBCONN"
               export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
               export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
               ) &
