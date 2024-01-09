@@ -266,7 +266,7 @@ jobs:
              #sleep 0.42
              [[ "$myoct" = "5" ]] && sleep 23
              ls upload/
-             (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && curl -kLv -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; rm /tmp/${{ matrix.oone }}.${myoct}.tgz)
+             (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && curl -kLv -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; rm /tmp/${{ matrix.oone }}.${myoct}.tgz ) &
              bash -c 'sleep $(($RANDOM%5))'
           done 2>&1 ) | tee  /tmp/logpipe 
           echo "all spawned"
