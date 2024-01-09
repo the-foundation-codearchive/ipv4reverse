@@ -1,0 +1,401 @@
+name: GEN
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'main'
+  schedule:
+    - cron: '0 0 1 * *'
+jobs:
+  premerge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: 'pages'
+          fetch-depth: '0'
+      - name: INIT Request Automerge
+        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+        env:
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: DONE pre-merge
+        run: echo DONE pre-merge
+  preclean:
+    needs: premerge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: 'pages'
+          fetch-depth: '0'
+      - name: PRE Pull Request autoclean
+        run: |
+          git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+          git checkout pages
+          tar czf /tmp/keep.tgz $(ls -1 README.md index.html ;test -e lists && echo lists) || true
+          echo "prune pages (temp)"
+          git checkout -b tmp-pages pages
+          git branch -D pages
+          echo orphan
+          git switch --orphan pages
+
+          echo reset
+          git reset --hard
+          echo emptycommit
+          git commit --allow-empty -m "init"
+
+          echo add
+          echo hi > .init-empty-file
+          test -e /tmp/keep.tgz && tar xzf /tmp/keep.tgz || true 
+          find lists/ -empty -delete||true ;
+          git add -A|| true
+          echo commit
+          git commit -m "init"
+          echo push
+          git push origin pages --force
+          #git checkout -b old_pages pages
+          #git branch -D pages
+          #git checkout --orphan pages
+          #git reset --hard
+          #git commit --allow-empty -m "Initial commit"
+          #git push origin pages:pages --force-with-lease
+          #git checkout old_pages
+          #git rebase origin/pages
+          #git push origin my-feature-1:my-feature-1 --force-with-lease
+
+          #bash -c "git switch pages;git reset --soft $(git merge-base pages HEAD)";
+          #git commit -m "one commit on yourBranch" || true ;
+          #git add -A
+          #git push --force || true 
+      - name: DONE pre-clean
+        run: echo DONE pre-clean
+ 
+  generate:
+    needs: preclean
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 48
+      #max-parallel: 3
+      matrix:
+        oone: [1, 2, 3, 4, 5, 6, 7, 8, 9,     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126,      128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223]
+        #arch: [linux_SLASH_amd64]
+#        exclude:
+#          - oone: 192
+#            otwo: 168
+        #  - os: alpine
+        #    arch: linux_SLASH_arm_SLASH_v6
+        #  - os: ubuntu-bionic
+        #    arch: linux_SLASH_386
+    # Map a step output to a job output
+    outputs:
+      output1: ${{ steps.step1.outputs.otwo }}
+#      output2: ${{ steps.step2.outputs.test }}
+    steps:
+      - id: step1
+        run: echo "otwo=1" >> "$GITHUB_OUTPUT"
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: 'pages'
+          fetch-depth: '0'
+          
+      - name: List Files
+        run: |
+          find -type f |wc -l  
+#      - name: Set up Python 3.8
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: "3.8"
+      - name: Install dependencies
+        run: |
+          (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
+          #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/tune-tcp.sh >/tmp/tune-tcp.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
+          git clone https://gitlab.com/the-foundation/bash-logger.git /tmp/bash-logger & 
+          ( mkdir  -p /etc/custom; git clone https://github.com/TheFoundation/picoinflux.git  /etc/custom/picoinflux) &
+          #(cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
+          #(cd /tmp/;wget -q -c https://github.com/cbuijs/routedns-binaries/raw/master/linux/amd64/routedns;chmod +x routedns )
+          ####spawn resolver.
+          ####sudo service systemd-resolved stop || true
+          ####(echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
+          ###sudo apt update || true
+          ###sudo apt-get install -y --no-install-recommends dnsmasq-base 
+          ###( sudo service systemd-resolved stop || true;          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) ) || true &
+          ###(cd /tmp/; echo "H4sIAAAAAAAAA+2VTY+bMBCGc+ZXWORaHNt8xlLVSw/tpVq1e4tyAAMJEosRONFGVf97x0mbDWnY3UpJq6rzIATjj3fGw9h0emOKvOlprtfU6Id6cn0YEEWBffqc+z+e0b798B5MeBDwQIQ8FtDP/dCPJoTdIJZf2PQm7QiZ1Omu6J7x+FL/P4qpTF2Qt8T9bAvh/acvROmmrFabLjWVbkipO9J2elvlVbMi0O/pbdF5H+7v70itVVrXO9eZ9qYoOhhAm+LR2GqqNFmnPUnzvCv6nnAWUOEnlCeciuTl8YLNqb3DmPIoHB//8W4bnUxiXPJ5yWSq7FvMZBgwJkVZyrJQiYyFesb3UCtlhYzmIBNwUAhlyMJA7oW4krFKuLNYdXrT9rRLm1w/LB2zawtCbCoPLZAWkNI1pKuH1oXbPII3D/aZ+4YcDeOlQzMbmspdOiMyduaJlQ0sNbByUFkcZZbOiUFP9JYOOWYA1rE2pu3lbGaT9JSsmZ8LlSVf34H5zYUZUB5GK13bKXZ10JRpbXrTpa13IjcsAvdyDNltYxAspiKI6JxDGGMxqBvnIRJUCAa3D/kYiSH/s99ieiEIYwtiOoji4I4Og5BJCKuYvjLj0/MgzZj37Arez3P9eu/qGt7Ps3zBO+zFuoIzqTlsTEKeTLo/YL1N3p4VAxcxZXBxab0PRWG0bfq5pNPz6JK4Ub8jDqNHxR3nb//LEARBEARBEARBEARBEARBEARBEARBEOR/5TsaU61uACgAAA=="|base64 -d | tar xvz)
+          ###(cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do sudo  /tmp/routedns /tmp/$resfile & done ) &
+          ###sudo dnsmasq -f -d --port 53 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv & 
+          ###sleep 2
+          ###timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true
+          ###timeout 10 host test.command.lan 127.0.0.1 || true  
+          ###sudo killall -9 dnsmasq routedns || true
+          wait
+
+      - name: Run thingy... 
+        run: |
+          date +%s > /tmp/.buildstart
+          export INFLUX_MEASUREMENT=buildtime
+          sudo bash /tmp/tune-tcp.sh &        
+          echo -11|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}
+          git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+          echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
+          (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?bucket=buildstatus&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
+          startdir=$(pwd)
+          docker run -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
+          touch /dev/shm/.process_running
+          while (test -e  /dev/shm/.process_running );do  sleep 90;
+              LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
+               echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) | LBCONNs: $LBCONN |PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
+          uptime
+          echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
+          echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
+          echo "export LOGTOINFLUXTOKEN=${{ secrets.LOGTOINFLUXTOKEN }}"                 >>/dev/shm/.tokenv
+          echo "export LOGTOINFLUXURL=${{ secrets.LOGTOINFLUXURL }}"                     >>/dev/shm/.tokenv
+          echo "export STATSTARGET=${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}"  >>/dev/shm/.tokenv
+
+
+          #bash /tmp/git-new.sh 
+          mkdir /tmp/tmp_${{ matrix.oone }}
+          #cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1
+          #spawn resolver
+          #( sudo service systemd-resolved stop || true;          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) ) || true &   
+          #(echo "W1Jlc29sdmVdCkROUz0gMTYyLjIyMC4yMjMuMjMjM2QyY2I4LmRucy5uZXh0ZG5zLmlvIDIwNy4yNDYuOTEuMTg4IzNkMmNiOC5kbnMubmV4dGRucy5pbyAgMjAwMToxOWYwOjU6NjYzZDo1NDAwOjJmZjpmZWNlOjJmMTQjM2QyY2I4LmRucy5uZXh0ZG5zLmlvIDJhMDA6MTFjMDo0Njo0Ojo1IzNkMmNiOC5kbnMubmV4dGRucy5pbyAKRmFsbGJhY2tETlM9IDE2Mi4yMjAuMjIzLjIzIzNkMmNiOC5kbnMubmV4dGRucy5pbyAyMDcuMjQ2LjkxLjE4OCMzZDJjYjguZG5zLm5leHRkbnMuaW8gIDIwMDE6MTlmMDo1OjY2M2Q6NTQwMDoyZmY6ZmVjZToyZjE0IzNkMmNiOC5kbnMubmV4dGRucy5pbyAyYTAwOjExYzA6NDY6NDo6NSMzZDJjYjguZG5zLm5leHRkbnMuaW8gCkRvbWFpbnM9fi4KRE5TT3ZlclRMUz15ZXMKRE5TU0VDPW5vCg=="|base64 -d |sudo tee  /etc/systemd/resolved.conf.d/dot.conf)
+          #sudo service systemd-resolved restart
+
+          #(cd /tmp/; echo "H4sIAAAAAAAAA+2VTY+bMBCGc+ZXWPTaOLb5jKWqlx7aS7Vq9xblQAwkSCxGxok2qvrfOyTtLpCwm101WrWaByGYwZ4ZXsbG6K3N0qqhqd5Qq+/Kyd+HAWHot1ePc+/3NTz4D/chm3Df574IgiACP/eCgE8Iu0ItJ2wbmxhCJmWyz8wTGZ97/o9iC1tm5ANxv7WN8Onrd6J0lRfrrUlsoSuSa0Nqo3dFWlRrAs+nepeZ6efb2xtSapWU5d513jU2ywwMoFV2b9tuKjTZJA1J0tRkTUM486nwYspjTkX8/HjB5rQ9g4jyMBgf/+VmF3YmMS75PGcyUe1dxGTgMyZFnss8U7GMhHoidz9WwjIZziGMzyFCIAMW+PIQiCsZqZg7i7XR27qhJqlSfbd07L7OCGmlPHpAFgilS5CrAe/Cre4h2xTWmfuePBh2mvTNVd9U7tIZCdPO7FirnqV6VtqxLsm4eEi5dDoG7eReOuRBLXjnjbV1I2ezVtBHYWdeKtQq/vERzJ8uzIBWslrpsp3SKgGulda2sSapp51w/YZxz9ewum4NgkVU+CGdcyhjrAZ1ZR1CQYVgcHqgx0gN6Zt/C3vSD8dktF+CjAPvYrmHBdqRzMMueHnmociXZh5++1dkHkh7JjOsv7KAPas6LkZCHk162ICn27QeFMJFRBkcXMIP9eSFYHzr+vNG3R3rXHirXhYexo+Gd5y3/t8hCIIgCIIgCIIgCIIgCIIgCIIgCIIgyP/IL2jzM2sAKAAA"|base64 -d | tar xvz)
+          #sudo service systemd-resolved stop || true
+          #(cd /tmp/; for resfile in routedns.doh.toml routedns.doh2.toml routedns.dot.toml routedns.dot2.toml;do sudo  /tmp/routedns /tmp/$resfile & done  ) &
+          #(cd /tmp/; for resfile in routedns.doh.toml ;do sudo  /tmp/routedns /tmp/$resfile & done  ) &
+          ##sleep 1
+          ##(sudo dnsmasq -f -d --port 53 --dns-forward-max=150000 --server="127.0.0.1#3553" --server="127.0.0.1#4553" --server="127.0.0.1#8553" --server="127.0.0.1#9553" --no-resolv) & 
+          #sleep 2
+          #
+          (echo nameserver 1.1.1.1 |sudo tee /etc/resolv.conf ) || true
+          ##sudo bash -c '( $(echo L3RtcC9kbnNwcm94eSAtLXBvcnQgNTMgLS1lZG5zIC11IGh0dHBzOi8vZG5zLm5leHRkbnMuaW8vM2QyY2I4IC11IHRsczovLzNkMmNiOC5kbnMubmV4dGRucy5pbyAtdSAyYTA3OmE4YzA6OjNkOjJjYjggLXUgMmEwNzphOGMwOjozZDoyY2I4IA==|base64 -d);echo " -f 1.1.1.1 -f 4.2.2.4 -f 4.2.2.2 -f 8.8.8.8 -f 9.9.9.9 -f 114.114.114 -f 8.8.4.4 -f 4.2.2.3 --port 5553")'  & 
+          #echo waiting for resolver
+          #timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true 
+          #timeout 10 host starting.command.lan        127.0.0.1 || true 
+          #timeout 10 host -t ptr 9.9.9.9.in-addr.arpa  || true 
+          #timeout 10 host starting.command.lan         || true          
+          #bash -c "timeout 10 dig -p 5553  starting.command.lan @127.0.0.1"|| true 
+          mkfifo /tmp/logpipe 
+          export INFLUX_MEASUREMENT=buildtime            
+          echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}
+          export INFLUX_MEASUREMENT=log
+          ( ( while (true);do cat /tmp/logpipe;sleep 2;done )| while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog FALSE $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  info >/dev/null ) &
+          ##MAIN LOOP
+          (
+          ( while (true);do sudo  /bin/sh -c "export HOME=/root;/bin/bash /etc/custom/picoinflux/picoinflux.sh" ;cat /tmp/picoinflux.log;sleep 120;done ) &
+          doneip=0
+          doneoct=0
+
+          opstart=$(date -u +%s)
+          for myoct in $(seq 0 255);do 
+            ( LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
+              #echo "LB:CONN: $LBCONN"
+              export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
+              export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
+              ) &
+            #[[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 20 ]]  && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(cat /proc/loadavg) >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 15 ]]   && (sleep 20 ;   echo "PAR_load_throttled 10 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;   echo "PAR_load_throttled 15 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 10 ;   echo "PAR_load_throttled 10 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6  ]]   && (sleep  5 ;   echo "PAR_load_throttled 5  s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
+            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 950 ]] ) ;do 
+                ( 
+                LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
+                #echo "LB:CONN: $LBCONN"
+                export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
+                export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
+                ) &
+                echo "PAR_sleeping until less than 950 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2;sleep 15;done
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 768 ]]     &&  (sleep  9  ;  echo "PAR_conn__throttled  7 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 666  ]]     && (sleep  7  ;  echo "PAR_conn__throttled  9 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 512  ]]     && (sleep  3  ;  echo "PAR_conn__throttled  3 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null |wc -l ) >&2 )
+            [[ $LBCONN -ge 666 ]]                                          && (sleep  7  ;  echo "PAR_LBcon_throttled  7 s FOR ${{ matrix.oone }}/${myoct} LBCONNs: $LBCONN MYCONNs:"$(uptime |sed 's/.\+ up/up/g') >&2 )
+
+             octstart=$(date -u +%s)
+             doneip=$(($myoct*255))
+             ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &
+             (
+
+             #(cd "/tmp/tmp_${{ matrix.oone }}";bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
+
+               #main thingy
+               (
+                source /dev/shm/.tokenv || true ;
+                echo "starting_${{ matrix.oone }} $myoct .. ";
+               # cd "/tmp/tmp_${{ matrix.oone }}"|| exit 1;
+                #pwd;
+                test -e "/tmp/gen_${myoct}.log" && rm "/tmp/gen_${myoct}.log";
+                ( echo -n "$(date) ";echo " STARTING FOR ${{ matrix.oone }} ${myoct}" )> "/tmp/gen_${myoct}.log";
+                #find lists/ -mindepth 1 -delete;
+                #( ( bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}" || true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log);
+                ( ( cd $startdir; bash /tmp/gen.sh  "${{ matrix.oone }}" "${myoct}"  "$startdir"|| true ) 2>&1|tee -a "/tmp/gen_${myoct}.log" );
+                #echo "act: finished in "$(pwd);
+                # exit 0;
+               )
+             sleep 1; # prevent /0
+             octend=$(date -u +%s)
+             octtime=$(($octend-$octstart))
+             optime=$(($octend-$opstart))
+             mydoneip=$(($doneip+255))
+
+             ipavg=$(($mydoneip/$optime))
+             octavg=$(($myoct/$optime))
+             localavg=$((255/$octtime))
+
+             echo "done |  ${{ matrix.oone }} $myoct IN $octtime s (== $localavg req/s ) | GLOBAL AVGs IP/s:  $ipavg     oct/s: $octavg" >&2
+             ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }} ) &
+             [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
+             [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
+             )  & sleep 8
+             #sleep 0.42
+             [[ "$myoct" = "5" ]] && sleep 23
+             ls upload/
+             bash -c 'sleep $(($RANDOM%5))'
+          done 2>&1 ) | tee  /tmp/logpipe 
+          echo "all spawned"
+          ## wait for max 30 min to complete job)
+          for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
+          echo finished waiting
+          #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
+          ( export INFLUX_MEASUREMENT=buildtime; bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &
+          pwd
+          echo thingy done
+          mkdir upload
+          #mv /tmp/tmp_${{ matrix.oone }}/lists upload/
+          exit 0
+        env:
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: create  artifacts
+#        run: bash -c 'mkdir upload; mv /tmp/tmp_${{ matrix.oone }}/lists upload/'
+      - name: push artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact-data-${{ matrix.oone }}
+          path: upload/lists/
+          if-no-files-found: ignore 
+          # 'error' 'warn' or 'ignore' are also available, defaults to `warn`
+          retention-days: 2
+      - name: create log artifacts
+        if: always()
+        run: bash -c 'mkdir logupload; cp $(find /tmp/ -maxdepth 1 -name "*.log") logupload/'
+      - name: push log artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact-log-${{ matrix.oone }}
+          path: logupload/*gz
+          if-no-files-found: ignore 
+          # 'error' 'warn' or 'ignore' are also available, defaults to `warn`
+          retention-days: 2
+
+#      - name: create pull request
+#        run: gh pr create -B pages -H rdns_automerge_${{ matrix.oone }}_${myoct} --label automerge --title 'Merge rdns_automerge_${{ matrix.oone }}_${myoct} into base_branch' --body-file /tmp/pullreq.md || true 
+#        env:
+#            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull Request Automerge
+        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+        env:
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  finalize:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download result from gen
+        uses: actions/download-artifact@v3
+      - name: "show artifact data level1"
+        run: bash -c "ls -1 artifact-data-*/lists/* -1d"|| true
+      - name: "generate data"
+        run: bash -c "mkdir /tmp/lists/;mv artifact-data-*/lists/*  /tmp/lists"
+      - name: Install dependencies and run
+        run: |
+          uptime
+          echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
+          echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
+          echo "export API_LIMIT_HELPER_URL=${{ secrets.API_LIMIT_HELPER_URL }}"         >>/dev/shm/.tokenv
+          #(curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
+          #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
+          #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
+          curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
+          wait
+          git bash /tmp/git-new.sh 0
+          cd /tmp/tmp_0/
+          rm -rf lists || true
+          mv /tmp/lists/ .
+          bash -c "timeout 1800 bash /tmp/git-send.sh 0"
+          exit 0
+          
+        env:
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+  cleanruns:
+    needs: finalize
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 1
+  merge:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: 'pages'
+          fetch-depth: '0'
+      - name: FINAL Request Automerge
+        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+        env:
+            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+            #MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  archive:
+    needs: merge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          ref: 'pages'
+          fetch-depth: '0'
+      - name: archive step
+        run: |
+          git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+          echo "generating archive"
+          tar cvzf /tmp/keepa.tgz lists|wc -l 
+          echo branch
+          git branch
+          echo "insert"
+          git checkout archive && ( tar xvzf /tmp/keepa.tgz lists|wc -l ) && git add -A && git commit -m "ARCHIVE UPDATE "$(date +%Y-%m-%d_%H.%M) && git push
