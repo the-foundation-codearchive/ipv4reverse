@@ -1,8 +1,8 @@
 ##!/bin/bash
 source /dev/shm/.tokenv || true 
 
-octet_one=$1
-octet_two=$2
+octet_one="$1"
+octet_two="$2"
 startdir="$3"
 uptime
 #octet_three=$3
