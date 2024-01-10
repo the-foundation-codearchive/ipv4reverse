@@ -64,8 +64,8 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             export INFLUX_MEASUREMENT=buildtime            
             echo $(($myend-$mystart)) |bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
             
-         ) |grep -v -e ERROR_1 -e ERROR_2 -e ERROR_1 -e ERROR_3 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
-         test -e out.${octet_one}.${octet_two}.${octet_three} && mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three}
+         ) |grep -v -e ERROR_1 -e ERROR_2  -e ERROR_3 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
+         test -e out.${octet_one}.${octet_two}.${octet_three} &&  ( mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three} ; du -m -s  ${octet_one}.${octet_two}.${octet_three} )
         (cd ${startdir} ;tar cvzf /tmp/${octet_one}.${octet_two}.${octet_three}.tgz upload/lists/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} && curl -kLv -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz ; rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ) &
 
      ) 
