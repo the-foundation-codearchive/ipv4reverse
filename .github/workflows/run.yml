@@ -201,7 +201,8 @@ jobs:
           ( while (true);do sudo  /bin/sh -c "export HOME=/root;/bin/bash /etc/custom/picoinflux/picoinflux.sh" ;cat /tmp/picoinflux.log;sleep 120;done ) &
           doneip=0
           doneoct=0
-
+          export WEBDAV_TOKEN=$WEBDAV_TOKEN
+          export WEBDAV_URL=$WEBDAV_URL
           opstart=$(date -u +%s)
           for myoct in $(seq 0 255);do 
             ( LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
@@ -259,10 +260,11 @@ jobs:
              localavg=$((255/$octtime))
 
              echo "done |  ${{ matrix.oone }} $myoct IN $octtime s (== $localavg req/s ) | GLOBAL AVGs IP/s:  $ipavg     oct/s: $octavg" >&2
+             (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && curl -kLv -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; rm /tmp/${{ matrix.oone }}.${myoct}.tgz ) &
+
              ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }} ) &
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
-             (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && curl -kLv -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; rm /tmp/${{ matrix.oone }}.${myoct}.tgz ) &
              )  & sleep 8
              #sleep 0.42
              [[ "$myoct" = "5" ]] && sleep 23

@@ -56,7 +56,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             [[ $(($octet_three%3)) -eq 0 ]] && dohdirect="yes"
             [[ $(($octet_three%3)) -eq 0 ]] || dohdirect="no"
             ## but only with not too many connections
-            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1345 ]] && dohdirect="no"
+            [[ $(sudo netstat -puteen 2>/dev/null |wc -l ) -ge 1234 ]] && dohdirect="no"
 
             [[ "${dohdirect}" = "yes" ]]  ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
             [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1
@@ -66,11 +66,13 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             
          ) |grep -v -e ERROR_1 -e ERROR_2 -e ERROR_1 -e ERROR_3 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
          test -e out.${octet_one}.${octet_two}.${octet_three} && mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three}
+        (cd ${startdir} ;tar cvzf /tmp/${octet_one}.${octet_two}.${octet_three}.tgz upload/lists/${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} && curl -kLv -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz ; rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ) &
+
      ) 
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) #&   
 
-sleep 3
+sleep 1
 sleep 0.$(($RANDOM%9))
 
 
