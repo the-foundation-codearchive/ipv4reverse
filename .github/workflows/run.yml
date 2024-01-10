@@ -262,11 +262,12 @@ jobs:
              ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }} ) &
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
+             (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && curl -kLv -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; rm /tmp/${{ matrix.oone }}.${myoct}.tgz ) &
              )  & sleep 8
              #sleep 0.42
              [[ "$myoct" = "5" ]] && sleep 23
              ls upload/
-             (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && curl -kLv -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; rm /tmp/${{ matrix.oone }}.${myoct}.tgz ) &
+
              bash -c 'sleep $(($RANDOM%5))'
           done 2>&1 ) | tee  /tmp/logpipe 
           echo "all spawned"

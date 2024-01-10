@@ -1,6 +1,5 @@
 #!/bin/bash
 echo '
-
 # General gigabit tuning:
 net.core.rmem_max = 16777216
 net.core.wmem_max = 16777216
@@ -13,7 +12,6 @@ net.ipv4.tcp_mem = 50576   64768   98152
 net.core.netdev_max_backlog = 2500
 # I was also masquerading the port comet was on, you might not need this
 net.ipv4.netfilter.ip_conntrack_max = 1048576
-
 ### Kernel settings for TCP
 
 # Provide adequate buffer memory.
@@ -21,7 +19,7 @@ net.ipv4.netfilter.ip_conntrack_max = 1048576
 # settable with setsockopt(), in bytes
 # tcp_rmem and tcp_wmem are per socket in bytes.
 # tcp_mem is for all TCP streams, in 4096-byte pages.
-# The following are suggested on IBM's
+# The following are suggested on IBM_s
 # High Performance Computing page
 net.core.rmem_max = 16777216
 net.core.wmem_max = 16777216
@@ -39,7 +37,7 @@ net.ipv4.tcp_sack = 0
 net.ipv4.tcp_dsack = 0
 net.ipv4.tcp_fack = 0
 
-# Disable the gradual speed increase that's useful
+# Disable the gradual speed increase that_s useful
 # on variable-speed WANs but not for us
 net.ipv4.tcp_slow_start_after_idle = 0 
 
