@@ -145,6 +145,7 @@ jobs:
       - name: Run thingy... 
         run: |
           date +%s > /tmp/.buildstart
+          export INFLUX_USER_AGENT="GHA/0.0.1 "$(cat /tmp/.buildstart)" ${{ github.workflow }}-${{ github.ref }}"
           export INFLUX_MEASUREMENT=buildtime
           sudo bash /tmp/tune-tcp.sh &        
           echo -11|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}
