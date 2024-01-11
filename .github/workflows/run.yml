@@ -117,6 +117,7 @@ jobs:
 #          python-version: "3.8"
       - name: Install dependencies
         run: |
+          (          docker pull ghcr.io/y0l0-os/tor-load-balancer-docker:main 2>&1 |grep -i "ull complet" || true  ) &
           (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
           #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
@@ -154,7 +155,8 @@ jobs:
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=buildstatus&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
-          docker pull ghcr.io/y0l0-os/tor-load-balancer-docker:main 2>&1 |grep -i "ull complet" || true 
+
+
           docker run -e TORCOUNT=8 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
 
           touch /dev/shm/.process_running
