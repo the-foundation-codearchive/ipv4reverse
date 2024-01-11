@@ -160,7 +160,10 @@ jobs:
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 90;
               LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
-               echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) | LBCONNs: $LBCONN |PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;docker exec tlb bash /newip.sh &>/dev/null || true ;done &
+               echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) | LBCONNs: $LBCONN |PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;done &
+          while (test -e  /dev/shm/.process_running );do  sleep 23;
+                docker exec tlb ash /newip.sh &>/dev/null || true 
+              done
           uptime
           echo "checking if LB is running"
           sleep 5
