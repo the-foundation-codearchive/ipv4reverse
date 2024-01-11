@@ -203,7 +203,7 @@ jobs:
           ( ( while (true);do cat /tmp/logpipe;sleep 2;done )| while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog "${{ secrets.LOGTOINFLUXORG }}" FALSE $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  info &>/dev/null ) &
           ##MAIN LOOP
           (
-          ( while (true);do sudo  /bin/sh -c "export HOME=/root;/bin/bash /tmp/custom/picoinflux/picoinflux.sh" ;cat /tmp/picoinflux.log;sleep 120;done ) &
+          ( while (true);do sudo  /bin/sh -c "export HOME=/root;/bin/bash /tmp/custom/picoinflux/picoinflux.sh &>/tmp/picoinflux.log" ;cat /tmp/picoinflux.log;sleep 120;done ) &
           doneip=0
           doneoct=0
           export WEBDAV_TOKEN=$WEBDAV_TOKEN
@@ -265,7 +265,7 @@ jobs:
              localavg=$((255/$octtime))
 
              echo "done |  ${{ matrix.oone }} $myoct IN $octtime s (== $localavg req/s ) | GLOBAL AVGs IP/s:  $ipavg     oct/s: $octavg" >&2
-             test -e upload/lists/${{ matrix.oone }}.${myoct} && (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && (echo "uploading: "$(curl -kL -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; test -e /tmp/${{ matrix.oone }}.${myoct}.tgz  && rm /tmp/${{ matrix.oone }}.${myoct}.tgz )) ) &
+             test -e upload/lists/${{ matrix.oone }}.${myoct} && (tar cvzf /tmp/${{ matrix.oone }}.${myoct}.tgz upload/lists/${{ matrix.oone }}.${myoct} && (echo "uploading: "$(curl -kL  -w "%{http_code}" -T /tmp/${{ matrix.oone }}.${myoct}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${{ matrix.oone }}.${myoct}.tgz ; test -e /tmp/${{ matrix.oone }}.${myoct}.tgz  && rm /tmp/${{ matrix.oone }}.${myoct}.tgz )) ) &
 
              ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }} ) &
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
