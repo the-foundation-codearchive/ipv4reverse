@@ -24,9 +24,9 @@ for octet_three in 0 $(seq 1 254);do
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6 ]]    && (sleep 5   ;  echo "GEN_load_throttled 5  s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |grep -v 127.0.0.1 |wc -l ) -ge 1666 ]] ) ;do 
                 echo "GEN_sleeping until less than 1666 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2;sleep 5;done
-            #[[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 888   ]]     && (sleep 12  ;  echo "GEN_conn_throttled 12 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 888   ]]     && (sleep  4   ;  echo "GEN_conn_throttled  4 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 666   ]]     && (sleep  0.5 ;  echo "GEN_conn_throttled  3 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
+            #[[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 888   ]]     && (sleep 12  ;  echo "GEN_conn_throttled 12   s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 888   ]]     && (sleep  4   ;  echo "GEN_conn_throttled  4   s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 666   ]]     && (sleep  0.5 ;  echo "GEN_conn_throttled  0.5 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
 #test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
 test -e "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
@@ -69,7 +69,8 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          test -e out.${octet_one}.${octet_two}.${octet_three} &&  ( 
                 mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three} ; wc -l  ${octet_one}.${octet_two}.${octet_three}  ;
                 (tar cvzf /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ${octet_one}.${octet_two}.${octet_three} && (
-                    curlcmdbase=$(echo curl -kL -w "%{http_code}" -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u ${WEBDAV_TOKEN} ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz |base64 -w0)
+                    #curlcmdbase=$(echo curl -kL -w "%{http_code}" -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u ${WEBDAV_TOKEN} ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz |base64 -w0)
+                    curlcmdbase=""
                     echo -n "uploading: $curlcmdbase ( "$(du -k /tmp/${octet_one}.${octet_two}.${octet_three}.tgz |cut -f1)" k)-> "$( curl -kL -w "%{http_code}" -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u ${WEBDAV_TOKEN} ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz )) ; test -e /tmp/${octet_one}.${octet_two}.${octet_three}.tgz && rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ;echo ) & )
         
 
