@@ -124,7 +124,7 @@ jobs:
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-new.sh  >/tmp/git-new.sh  &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/git-send.sh >/tmp/git-send.sh &
           git clone https://gitlab.com/the-foundation/bash-logger.git /tmp/bash-logger & 
-          ( mkdir  -p /etc/custom; git clone https://github.com/TheFoundation/picoinflux.git  /etc/custom/picoinflux) &
+          ( mkdir  -p /tmp/custom; git clone https://github.com/TheFoundation/picoinflux.git  /tmp/custom/picoinflux) &
           #(cd /tmp/;curl -kLs "https://github.com/AdguardTeam/dnsproxy/releases/download/v0.48.3/dnsproxy-linux-amd64-v0.48.3.tar.gz"| tar xvz;mv linux-amd64/dnsproxy /tmp )
           #(cd /tmp/;wget -q -c https://github.com/cbuijs/routedns-binaries/raw/master/linux/amd64/routedns;chmod +x routedns )
           ####spawn resolver.
@@ -153,7 +153,7 @@ jobs:
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=buildstatus&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
-          docker run -d -p 9050:9050 --env TORCOUNT=12 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
+          docker run -d -p 9050:9050  --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 90;
               LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
@@ -202,7 +202,7 @@ jobs:
           ( ( while (true);do cat /tmp/logpipe;sleep 2;done )| while read line;do echo "$line" >&2 ;echo "$line"  ;done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | tr -d '\000-\010\013\014\016-\037'|sed -u  's/\r/\n/g;s/\t/    /g'|grep --line-buffered -v ^$ | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildlog "${{ secrets.LOGTOINFLUXORG }}" FALSE $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }}  info >/dev/null ) &
           ##MAIN LOOP
           (
-          ( while (true);do sudo  /bin/sh -c "export HOME=/root;/bin/bash /etc/custom/picoinflux/picoinflux.sh" ;cat /tmp/picoinflux.log;sleep 120;done ) &
+          ( while (true);do sudo  /bin/sh -c "export HOME=/root;/bin/bash /tmp/custom/picoinflux/picoinflux.sh" ;cat /tmp/picoinflux.log;sleep 120;done ) &
           doneip=0
           doneoct=0
           export WEBDAV_TOKEN=$WEBDAV_TOKEN
