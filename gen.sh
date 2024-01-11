@@ -22,7 +22,7 @@ for octet_three in 0 $(seq 1 254);do
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 15  ;  echo "GEN_load_throttled 15 s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 8 ]]    && (sleep 10  ;  echo "GEN_load_throttled 10 s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6 ]]    && (sleep 5   ;  echo "GEN_load_throttled 5  s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
-            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 1666 ]] ) ;do 
+            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |grep -v 127.0.0.1 |wc -l ) -ge 1666 ]] ) ;do 
                 echo "GEN_sleeping until less than 1666 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2;sleep 5;done
             #[[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 888   ]]     && (sleep 12  ;  echo "GEN_conn_throttled 12 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
             [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 888   ]]     && (sleep  4   ;  echo "GEN_conn_throttled  4 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
@@ -53,9 +53,9 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus "${LOGTOINFLUXORG}" FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
             
             dohdirect="no"
-            ## 1/3 of req are sent direct
-            [[ $(($octet_three%3)) -eq 0 ]] && dohdirect="yes"
-            [[ $(($octet_three%3)) -eq 0 ]] || dohdirect="no"
+            ## 1/4 of req are sent direct
+            [[ $(($octet_three%4)) -eq 0 ]] && dohdirect="yes"
+            [[ $(($octet_three%4)) -eq 0 ]] || dohdirect="no"
             ## but only with not too many connections
             [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 1234 ]] && dohdirect="no"
 
