@@ -1,5 +1,6 @@
 ##!/bin/bash
 source /dev/shm/.tokenv || true 
+grep_numbers_float() { grep -Eo '[+-]?[0-9]+([.][0-9]+)?' ; } ;
 
 octet_one="$1"
 octet_two="$2"
@@ -65,7 +66,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             echo $(($myend-$mystart)) |bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus "${LOGTOINFLUXORG}" FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
             
          ) |grep -v -e ERROR_1 -e ERROR_2  -e ERROR_3 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
-         test -e out.${octet_one}.${octet_two}.${octet_three} &&  ( mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three} ; du -m -s  ${octet_one}.${octet_two}.${octet_three}  ;  (tar cvzf /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ${octet_one}.${octet_two}/${octet_one}.${octet_two}.${octet_three} && (echo -n "uploading: "$( curl -kLv -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz)) ; test -e /tmp/${octet_one}.${octet_two}.${octet_three}.tgz && rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ) & )
+         test -e out.${octet_one}.${octet_two}.${octet_three} &&  ( mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three} ; wc -l  ${octet_one}.${octet_two}.${octet_three}  ;  (tar cvzf /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ${octet_one}.${octet_two}.${octet_three} && (echo -n "uploading: "$( curl -kLv -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz)) ; test -e /tmp/${octet_one}.${octet_two}.${octet_three}.tgz && rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ) & )
         
 
      ) 
