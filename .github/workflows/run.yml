@@ -170,9 +170,9 @@ jobs:
           echo "checking if LB is running"
           sleep 5
           docker ps -a |grep tlb
-          docker ps -a |grep tlb|grep xited || echo "NO TLB FOUND"
-          #docker ps -a |grep tlb|grep xited || docker logs tlb
-          docker ps -a |grep tlb|grep xited || exit 1 
+          docker ps -a |grep tlb|grep xited  && echo "NO TLB FOUND"
+          #docker ps -a |grep tlb|grep xited && docker logs tlb
+          docker ps -a |grep tlb|grep xited  && exit 1 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
