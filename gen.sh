@@ -14,7 +14,7 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 #octet_two
 echo "#######################################"
 echo "running FOR ${octet_one}/${octet_two} IN ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
-
+ERRFILT=" -e ERROR_1 -e ERROR_2 -e ERROR_3 -e ERROR_4"
 for octet_three in 0 $(seq 1 254);do 
 
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 15 ]]   && (sleep 23  ;  echo "GEN_load_throttled 23 s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
@@ -59,13 +59,13 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             ## but only with not too many connections
             [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 1234 ]] && dohdirect="no"
 
-            [[ "${dohdirect}" = "yes" ]]  ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 
-            [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1
+            [[ "${dohdirect}" = "yes" ]]  ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v $ERRFILT
+            [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v $ERRFILT
             myend=$(date -u +%s)
             export INFLUX_MEASUREMENT=buildtime            
             echo $(($myend-$mystart)) |bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus "${LOGTOINFLUXORG}" FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
             
-         ) |grep -v -e ERROR_1 -e ERROR_2  -e ERROR_3 -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
+         ) |grep -v $ERRFILT -e ProxyChains -e proxychains -e DeprecationWarning  -e get_event_loop
          test -e out.${octet_one}.${octet_two}.${octet_three} &&  ( mv out.${octet_one}.${octet_two}.${octet_three} ${octet_one}.${octet_two}.${octet_three} ; wc -l  ${octet_one}.${octet_two}.${octet_three}  ;  (tar cvzf /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ${octet_one}.${octet_two}.${octet_three} && (echo -n "uploading: "$( curl -kL -w "%{http_code}" -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz)) ; test -e /tmp/${octet_one}.${octet_two}.${octet_three}.tgz && rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz ) & )
         
 
