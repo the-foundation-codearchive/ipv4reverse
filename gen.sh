@@ -72,7 +72,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
                     curlcmdbase=""
                     #curlcmdbase=$(echo curl -kL -w "%{http_code}" -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u ${WEBDAV_TOKEN} ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz |base64 -w0)
 
-                    echo -n "uploading: $curlcmdbase ( "$(du -k /tmp/${octet_one}.${octet_two}.${octet_three}.tgz |cut -f1)" k)-> "$( curl -kL -w "%{http_code}" -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u ${WEBDAV_TOKEN} ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz >/tmp/.uploadout)) ; test -e /tmp/${octet_one}.${octet_two}.${octet_three}.tgz && rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz  ;echo ) & )
+                    echo -n "uploading: $curlcmdbase ( "$(du -k /tmp/${octet_one}.${octet_two}.${octet_three}.tgz |cut -f1)" k)-> "$( curl -kLs -w "%{http_code}" -T /tmp/${octet_one}.${octet_two}.${octet_three}.tgz -u ${WEBDAV_TOKEN} ${WEBDAV_URL}"netinfo/raw/"${octet_one}.${octet_two}.${octet_three}.tgz >/tmp/.uploadout)) ; test -e /tmp/${octet_one}.${octet_two}.${octet_three}.tgz && rm /tmp/${octet_one}.${octet_two}.${octet_three}.tgz  ;echo ) & )
         
 
      ) 
