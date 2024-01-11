@@ -49,9 +49,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          (
             mystart=$(date -u +%s)
-            export INFLUX_MEASUREMENT=buildtime            
-            echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus "${LOGTOINFLUXORG}" FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
-            
+            export INFLUX_MEASUREMENT=buildtime
             dohdirect="no"
             ## 1/4 of req are sent direct
             [[ $(($octet_three%4)) -eq 0 ]] && dohdirect="yes"

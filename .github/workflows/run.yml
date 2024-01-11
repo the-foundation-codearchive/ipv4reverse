@@ -153,7 +153,7 @@ jobs:
           echo "-11"|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
-          (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=buildstatus&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
+          (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=sys_build&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
 
 
@@ -173,6 +173,8 @@ jobs:
           docker ps -a |grep tlb|grep xited  && echo "NO TLB FOUND"
           #docker ps -a |grep tlb|grep xited && docker logs tlb
           docker ps -a |grep tlb|grep xited  && exit 1 
+          changeip=$((docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1))
+          [[ -z "$changeip" ]] || sed 's/127.0.0.1/'$changeip'/g' -i /etc/proxychains.conf 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
@@ -224,7 +226,12 @@ jobs:
           export WEBDAV_TOKEN=$WEBDAV_TOKEN
           export WEBDAV_URL=$WEBDAV_URL
           opstart=$(date -u +%s)
+          (
+            export STATSTARGET=buildtime;
+            echo 0|bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus "${LOGTOINFLUXORG}" FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${{ matrix.oone }}_$STATSTARGET &
+           ) &
           for myoct in $(seq 0 255);do 
+
             ( LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
               #echo "LB:CONN: $LBCONN"
               export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
