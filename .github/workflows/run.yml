@@ -55,7 +55,7 @@ jobs:
           echo add
           echo hi > .init-empty-file
           test -e /tmp/keep.tgz && tar xzf /tmp/keep.tgz || true 
-          find lists/ -empty -delete||true ;
+          find lists/ -empty -delete||true  ;
           git add -A|| true
           echo commit
           git commit -m "init"
@@ -285,11 +285,10 @@ jobs:
              ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" $(echo ${{ github.job }}|sed 's/build-//g')${{ matrix.oone }} ) &
              [[ "$myoct" = "255" ]] && echo "LAST RUN STANDING.. I WILL LEAVE THE HIGHWAY AT THE NEXT EXIT ;) "
              [[ "$myoct" = "255" ]] && rm /dev/shm/.process_running
-             )  & sleep 8
+             )  & sleep 5
              #sleep 0.42
              [[ "$myoct" = "5" ]] && sleep 23
-             ls upload/
-
+             #ls upload/
              bash -c 'sleep $(($RANDOM%5))'
           done 2>&1 ) | tee  /tmp/logpipe 
           echo "all spawned"
