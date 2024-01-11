@@ -153,7 +153,7 @@ jobs:
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=buildstatus&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
-          docker run -d -p 9050:9050 -e TORCOUNT=32 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
+          docker run -d -p 9050:9050 --env TORCOUNT=12 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 90;
               LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
