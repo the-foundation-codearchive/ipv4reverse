@@ -154,7 +154,9 @@ jobs:
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=buildstatus&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
-          docker run --rm -e TORCOUNT=10 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
+          docker pull ghcr.io/y0l0-os/tor-load-balancer-docker:main 2>&1
+          docker run --rm -e TORCOUNT=8 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
+
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 90;
               LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
@@ -163,6 +165,7 @@ jobs:
           echo "checking if LB is running"
           sleep 5
           docker ps -a |grep tlb|grep unning || echo "NO TLB FOUND"
+          docker ps -a |grep tlb|grep unning || docker logs tlb
           docker ps -a |grep tlb|grep unning || exit 1 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
