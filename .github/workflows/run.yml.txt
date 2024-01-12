@@ -269,7 +269,15 @@ jobs:
           done 2>&1 ) | tee  /tmp/logpipe 
           echo "all spawned"
           ## wait for max 30 min to complete job)
-          for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
+          #for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
+          #wait for the job  to run for at max 6h
+          remaining=$((21000-$(($(date +%s)-$(cat /tmp/.buildstart)))))
+          echo "remaining time(s): "$remaining
+          #while [[ $(($(date +%s)-$(cat /tmp/.buildstart))) -le 21000 ]] ;do 
+          for rounds in seq 1 $(($remaining/30));do 
+             remaining=$((21000-$(($(date +%s)-$(cat /tmp/.buildstart)))))
+             echo "remaining time(s): "$remaining" | "$(test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) )
+          done
           echo finished waiting
           #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
           ( export INFLUX_MEASUREMENT=buildtime; bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &

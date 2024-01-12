@@ -87,3 +87,11 @@ wait
 #find lists -type f -exec wc -l {} \;
 echo gen quitting from $(pwd)
 #done
+
+
+
+
+#echo '<?xml version="1.0"?>
+#<a:propfind xmlns:a="DAV:">
+#<a:prop><a:resourcetype/></a:prop>
+#</a:propfind>'|curl -i -X PROPFIND -u user:pass https://my.dav.lan/dav/netinfo/raw/ --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g'
