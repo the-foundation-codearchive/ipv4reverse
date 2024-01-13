@@ -48,10 +48,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          #cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          do_lookup="yes"
-         echo '<?xml version="1.0"?>
-         <a:propfind xmlns:a="DAV:">
-         <a:prop><a:resourcetype/></a:prop>
-         </a:propfind>'|curl -i -X PROPFIND -u user:pass https://my.dav.lan/dav/netinfo/raw/ --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' |grep -q netinfo/raw/${octet_one}.${octet_two}.${octet_three}.tgz && do_lookup="no"
+        cat /tmp/.list.netdrive | grep -q netinfo/raw/${octet_one}.${octet_two}.${octet_three}.tgz && do_lookup="no"
          [[ "$do_lookup" = "no" ]] && ( echo skipping ${octet_one}.${octet_two}.${octet_three} .. gz found )
          [[ "$do_lookup" = "yes" ]] && (
             mystart=$(date -u +%s)

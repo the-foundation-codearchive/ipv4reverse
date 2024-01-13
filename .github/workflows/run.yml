@@ -156,7 +156,11 @@ jobs:
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=sys_build&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
 
-
+          echo "getting cache"
+          echo '<?xml version="1.0"?>
+          <a:propfind xmlns:a="DAV:">
+          <a:prop><a:resourcetype/></a:prop>
+          </a:propfind>'|curl -i -X PROPFIND -u user:pass https://my.dav.lan/dav/netinfo/raw/ --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' > /tmp/.list.netdrive
           docker run -e TORCOUNT=8 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
 
           touch /dev/shm/.process_running
@@ -302,14 +306,16 @@ jobs:
           ## wait for max 30 min to complete job)
           #for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
           #wait for the job  to run for at max 6h
-          remaining=$((21000-$(($(date +%s)-$(cat /tmp/.buildstart)))))
+          remaining=$((20235-$(($(date +%s)-$(cat /tmp/.buildstart)))))
           echo "remaining time(s): "$remaining
           #while [[ $(($(date +%s)-$(cat /tmp/.buildstart))) -le 21000 ]] ;do 
           for rounds in seq 1 $(($remaining/30));do 
-             remaining=$((21000-$(($(date +%s)-$(cat /tmp/.buildstart)))))
+             remaining=$((20235-$(($(date +%s)-$(cat /tmp/.buildstart)))))
              echo "remaining time(s): "$remaining" | "$(test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) )
-          done          
+          done      
           echo finished waiting
+
+          rm /dev/shm/.process_running
           #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
           ( export INFLUX_MEASUREMENT=buildtime; bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff' | grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &
           pwd
