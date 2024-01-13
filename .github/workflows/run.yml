@@ -150,7 +150,7 @@ jobs:
           export INFLUX_USER_AGENT="GHA/0.0.1 "$(cat /tmp/.buildstart)" ${{ github.workflow }}-${{ github.ref }}"
           export INFLUX_MEASUREMENT=buildtime
           sudo bash /tmp/tune-tcp.sh &        
-          echo "-11"|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}
+          echo "-11"|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} &
           git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
           echo rdns-gen-${{ matrix.oone }}.act.gh.lan |sudo tee /etc/picoinfluxid 
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=sys_build&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
@@ -241,6 +241,7 @@ jobs:
               export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
               export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
               ) &
+            ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &
             #[[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 20 ]]  && (sleep 30 ;  echo "throttled 10s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(cat /proc/loadavg) >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 15 ]]   && (sleep 20 ;   echo "PAR_load_throttled 10 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;   echo "PAR_load_throttled 15 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
@@ -252,16 +253,17 @@ jobs:
                 #echo "LB:CONN: $LBCONN"
                 export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
                 export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
+                ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &
                 ) &
-                echo "PAR_sleeping until less than 2048 connections , CONNS: "$(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l  ) >&2;sleep 10;done
+                echo "PAR_sleeping until less than 2048 connections , CONNS: "$(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l  ) >&2;sleep 15;
+            done
             [[ $(sudo netstat -puteen 2>/dev/null |grep -v 127.0.0.1 |grep -e tcp -e udp |wc -l ) -ge 2345 ]]     && (sleep  5    ;  echo "PAR_conn__throttled  7 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null  |grep -v 127.0.0.1 |grep -e tcp -e udp|wc -l ) >&2 )
             [[ $(sudo netstat -puteen 2>/dev/null |grep -v 127.0.0.1 |grep -e tcp -e udp |wc -l ) -ge 1512 ]]     && (sleep  2    ;  echo "PAR_conn__throttled  9 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null  |grep -v 127.0.0.1 |grep -e tcp -e udp|wc -l ) >&2 )
             [[ $(sudo netstat -puteen 2>/dev/null |grep -v 127.0.0.1 |grep -e tcp -e udp |wc -l ) -ge 1024 ]]     && (sleep  0.5  ;  echo "PAR_conn__throttled  3 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null  |grep -v 127.0.0.1 |grep -e tcp -e udp|wc -l ) >&2 )
             [[ $LBCONN -ge 666 ]]                                          && (sleep  7    ;  echo "PAR_LBcon_throttled  7 s FOR ${{ matrix.oone }}/${myoct} LBCONNs: $LBCONN MYCONNs:"$(uptime |sed 's/.\+ up/up/g') >&2 )
 
              octstart=$(date -u +%s)
-             doneip=$(($myoct*255))
-             ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &
+             doneip=$(($myoct*255))          
              (
 
              #(cd "/tmp/tmp_${{ matrix.oone }}";bash /tmp/act.sh ${{ matrix.oone }} $myoct 2>&1 |grep -v " 0 (  0.00%) |            0 (  0.00%)" 2>&1 |tee /tmp/run_${{ matrix.oone }}_$myoct.log |grep -i -e "ull req" -e done -e commit -e push -e merge)|| true
@@ -314,6 +316,7 @@ jobs:
              echo "remaining time(s): "$remaining" | "$(test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) )
           done      
           echo finished waiting
+          echo "-11"|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}
 
           rm /dev/shm/.process_running
           #bash -c "timeout 1800 bash /tmp/git-send.sh ${{ matrix.oone }}"
