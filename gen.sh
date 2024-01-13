@@ -14,7 +14,7 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 #octet_two
 echo "#######################################"
 echo "running FOR ${octet_one}/${octet_two} IN ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
-ERRFILT=" -e ERROR_1 -e ERROR_2 -e ERROR_3 -e ERROR_4"
+ERRFILT=" -e ERROR_1 -e ERROR_2 -e ERROR_3 -e ERROR_4 -e ERROR_5"
 for octet_three in 0 $(seq 1 254);do 
 
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 15 ]]   && (sleep 23  ;  echo "GEN_load_throttled 23 s FOR ${octet_one}.${octet_two}.${octet_three} LOAD: "$(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) >&2 )
