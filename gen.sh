@@ -25,8 +25,8 @@ for octet_three in 0 $(seq 1 254);do
             while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |grep -v 127.0.0.1 |wc -l ) -ge 1666 ]] ) ;do 
                 echo "GEN_sleeping until less than 1666 connections , CONNS: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2;sleep 5;done
             #[[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 888   ]]     && (sleep 12  ;  echo "GEN_conn_throttled 12   s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 999   ]]     && (sleep  4   ;  echo "GEN_conn_throttled  4   s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
-            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 666   ]]     && (sleep  0.5 ;  echo "GEN_conn_throttled  0.5 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 1111  ]]     && (sleep  4   ;  echo "GEN_conn_throttled  4   s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
+            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 999   ]]     && (sleep  0.5 ;  echo "GEN_conn_throttled  0.5 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
 #test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
 test -e "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
@@ -58,7 +58,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             [[ $(($octet_three%4)) -eq 0 ]] && dohdirect="yes"
             [[ $(($octet_three%4)) -eq 0 ]] || dohdirect="no"
             ## but only with not too many connections
-            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 1234 ]] && dohdirect="no"
+            [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 1111 ]] && dohdirect="no"
 
             [[ "${dohdirect}" = "yes" ]]  ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v $ERRFILT
             [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v $ERRFILT
