@@ -160,7 +160,7 @@ jobs:
           echo '<?xml version="1.0"?>
           <a:propfind xmlns:a="DAV:">
           <a:prop><a:resourcetype/></a:prop>
-          </a:propfind>'|curl -i -X PROPFIND -u user:pass https://my.dav.lan/dav/netinfo/raw/ --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' > /tmp/.list.netdrive
+          </a:propfind>'|curl -i -X PROPFIND -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/" --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' > /tmp/.list.netdrive
           docker run -e TORCOUNT=8 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
 
           touch /dev/shm/.process_running
@@ -247,7 +247,7 @@ jobs:
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 12 ]]   && (sleep 15 ;   echo "PAR_load_throttled 15 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 10 ]]   && (sleep 10 ;   echo "PAR_load_throttled 10 s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6  ]]   && (sleep  5 ;   echo "PAR_load_throttled 5  s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
-            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 4096 ]] ) ;do 
+            while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 3333 ]] ) ;do 
                 ( 
                 LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |wc -l )
                 #echo "LB:CONN: $LBCONN"
@@ -255,7 +255,7 @@ jobs:
                 export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
                 ( export INFLUX_MEASUREMENT=buildtime;             bash -c 'timediff=$(($(date +%s)-$(cat /tmp/.buildstart)));echo $timediff'| grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }} ) &
                 ) &
-                echo "PAR_sleeping until less than 4096 connections , CONNS: "$(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l  ) >&2;sleep 20;
+                echo "PAR_sleeping until less than 3333 connections , CONNS: "$(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l  ) >&2;sleep 20;
             done
             [[ $(sudo netstat -puteen 2>/dev/null |grep -v 127.0.0.1 |grep -e tcp -e udp |wc -l ) -ge 2345 ]]     && (sleep  5    ;  echo "PAR_conn__throttled  7 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null  |grep -v 127.0.0.1 |grep -e tcp -e udp|wc -l ) >&2 )
             [[ $(sudo netstat -puteen 2>/dev/null |grep -v 127.0.0.1 |grep -e tcp -e udp |wc -l ) -ge 1512 ]]     && (sleep  2    ;  echo "PAR_conn__throttled  9 s FOR ${{ matrix.oone }}/${myoct} CONNs: "$(sudo netstat -puteen 2>/dev/null  |grep -v 127.0.0.1 |grep -e tcp -e udp|wc -l ) >&2 )
