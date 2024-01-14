@@ -80,8 +80,8 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) #&   
 
-sleep 1
-sleep 0.$(($RANDOM%9))
+#sleep 1
+sleep 0.$(($RANDOM%3))
 
 
 done
