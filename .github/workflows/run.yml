@@ -161,7 +161,7 @@ jobs:
           <a:propfind xmlns:a="DAV:">
           <a:prop><a:resourcetype/></a:prop>
           </a:propfind>'|curl -i -X PROPFIND -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/" --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' > /tmp/.list.netdrive
-          docker run -e TORCOUNT=8 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
+          docker run -e TORCOUNT=12 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
 
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 90;
