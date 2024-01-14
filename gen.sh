@@ -50,6 +50,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          do_lookup="yes"
         cat /tmp/.list.netdrive 2>/dev/null | grep -q netinfo/raw/${octet_one}.${octet_two}.${octet_three}.tgz && do_lookup="no"
          [[ "$do_lookup" = "no" ]] && ( echo skipping ${octet_one}.${octet_two}.${octet_three} .. gz found )
+         [[ "$do_lookup" = "yes" ]] && sleep 0.$(($RANDOM%9))
          [[ "$do_lookup" = "yes" ]] && test -e /dev/shm/.process_running && (
             mystart=$(date -u +%s)
             export INFLUX_MEASUREMENT=buildtime
@@ -80,8 +81,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
      test -e /tmp/out${octet_three}.${octet_two}.${octet_one}  && rm /tmp/out${octet_three}.${octet_two}.${octet_one}/ -rf
       ) #&   
 
-#sleep 1
-sleep 0.$(($RANDOM%3))
+
 
 
 done
