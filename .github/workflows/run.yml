@@ -163,21 +163,22 @@ jobs:
           </a:propfind>'|curl -i -X PROPFIND -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/" --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' > /tmp/.list.netdrive
           docker run -e TORCOUNT=16 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
 
+
+          uptime
+          echo "checking if LB is running"
+          sleep 5
+          docker ps -a |grep tlb
+          docker ps -a |grep tlb|grep -q xited  && echo "NO TLB FOUND"
+          docker ps -a |grep tlb|grep xited && (echo LOGS: ;docker logs tlb)
+          docker ps -a |grep tlb|grep -q xited  && exit 1 
+
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 90;
               LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |grep -v 127.0.0.1|wc -l )
                echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) | LBCONNs: $LBCONN |PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;done &
           while (test -e  /dev/shm/.process_running );do  sleep 23;
                 docker exec tlb ash /newip.sh &>/dev/null || true 
-              done &
-          uptime
-          echo "checking if LB is running"
-          sleep 5
-          docker ps -a |grep tlb|grep -v xited
-          docker ps -a |grep tlb|grep xited  && echo "NO TLB FOUND"
-          #docker ps -a |grep tlb|grep xited && (echo LOGS: ;docker logs tlb)
-          docker ps -a |grep tlb|grep -q xited  && exit 1 
-          changeip=$((docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1))
+              done &          changeip=$((docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1))
           [[ -z "$changeip" ]] || sed 's/127.0.0.1/'$changeip'/g' -i /etc/proxychains.conf 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
