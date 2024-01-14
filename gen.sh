@@ -29,7 +29,7 @@ for octet_three in 0 $(seq 1 254);do
             [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 999   ]]     && (sleep  0.5 ;  echo "GEN_conn_throttled  0.5 s FOR ${octet_one}.${octet_two}.${octet_three} CONNs: "$(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) >&2 )
 #test -e  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two} || mkdir -p  /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}
 test -e "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" || mkdir -p "${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
-python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match || time (  
+python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Match ||  (  
 ##     echo  {0..254}.${octet_three}.${octet_two}.${octet_one}.in-addr.arpa |sed 's/ /\n/g'  > /tmp/req${octet_three}.${octet_two}.${octet_one};
 #     mkdir  /tmp/out${octet_three}.${octet_two}.${octet_one}/
 #     ########################################/tmp/dns -r /tmp/resolvers  -t PTR -w /tmp/out${octet_three}.${octet_two}.${octet_one}  /tmp/req${octet_three}.${octet_two}.${octet_one} ;
@@ -60,9 +60,11 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
             [[ $(($octet_three%4)) -eq 0 ]] || dohdirect="no"
             ## but only with not too many connections
             [[ $(sudo netstat -puteen 2>/dev/null|grep -v 127.0.0.1 |wc -l ) -ge 1111 ]] && dohdirect="no"
+            time (
 
             [[ "${dohdirect}" = "yes" ]]  ||   proxychains python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v $ERRFILT
             [[ "${dohdirect}" = "yes" ]]  &&               python3 /tmp/mydoh.py ${octet_one} ${octet_two} ${octet_three} 2>&1 |grep -v $ERRFILT
+            )
             myend=$(date -u +%s)
             export INFLUX_MEASUREMENT=buildtime            
             echo $(($myend-$mystart)) |bash /tmp/bash-logger/log-to-influxdb2.sh "${LOGTOINFLUXURL}" buildstatus "${LOGTOINFLUXORG}" FALSE buildtime "${LOGTOINFLUXTOKEN}" OCT_${octet_one}_$STATSTARGET &
