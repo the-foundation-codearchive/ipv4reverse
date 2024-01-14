@@ -173,10 +173,10 @@ jobs:
           uptime
           echo "checking if LB is running"
           sleep 5
-          docker ps -a |grep tlb
+          docker ps -a |grep tlb|grep -v xited
           docker ps -a |grep tlb|grep xited  && echo "NO TLB FOUND"
-          #docker ps -a |grep tlb|grep xited && docker logs tlb
-          docker ps -a |grep tlb|grep xited  && exit 1 
+          #docker ps -a |grep tlb|grep xited && (echo LOGS: ;docker logs tlb)
+          docker ps -a |grep tlb|grep -q xited  && exit 1 
           changeip=$((docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1))
           [[ -z "$changeip" ]] || sed 's/127.0.0.1/'$changeip'/g' -i /etc/proxychains.conf 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
