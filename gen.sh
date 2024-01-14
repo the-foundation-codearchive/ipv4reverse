@@ -48,7 +48,7 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          #cd /tmp/tmp_${octet_one}/lists/${octet_one}/${octet_one}.${octet_two}; 
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          do_lookup="yes"
-        cat /tmp/.list.netdrive | grep -q netinfo/raw/${octet_one}.${octet_two}.${octet_three}.tgz && do_lookup="no"
+        cat /tmp/.list.netdrive 2>/dev/null | grep -q netinfo/raw/${octet_one}.${octet_two}.${octet_three}.tgz && do_lookup="no"
          [[ "$do_lookup" = "no" ]] && ( echo skipping ${octet_one}.${octet_two}.${octet_three} .. gz found )
          [[ "$do_lookup" = "yes" ]] && test -e /dev/shm/.process_running && (
             mystart=$(date -u +%s)

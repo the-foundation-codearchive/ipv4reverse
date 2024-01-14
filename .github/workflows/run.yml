@@ -174,7 +174,7 @@ jobs:
 
           touch /dev/shm/.process_running
           while (test -e  /dev/shm/.process_running );do  sleep 90;
-              LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |grep -v 127.0.0.1|wc -l )
+              LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  2>/dev/null |grep -v "remote_address"|grep -v rx_queue |grep -v 127.0.0.1|wc -l )
                echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) | LBCONNs: $LBCONN |PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;done &
           while (test -e  /dev/shm/.process_running );do  sleep 23;
                 docker exec tlb ash /newip.sh &>/dev/null || true 
@@ -237,7 +237,7 @@ jobs:
            ) &
           for myoct in $(seq 0 255);do 
 
-            ( LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |grep -v 127.0.0.1|wc -l )
+            ( LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  2>/dev/null |grep -v "remote_address"|grep -v rx_queue |grep -v 127.0.0.1|wc -l )
               #echo "LB:CONN: $LBCONN"
               export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
               export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | grep_numbers_float| bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
@@ -250,7 +250,7 @@ jobs:
             [[ $(uptime|cut -d, -f5|cut -d. -f1|cut -d" " -f2) -ge 6  ]]   && (sleep  5 ;   echo "PAR_load_throttled 5  s FOR ${{ matrix.oone }}/${myoct} LOAD: "$(uptime |sed 's/.\+ up/up/g') >&2 )
             while ( [[ $(netstat -puteen 2>/dev/null |grep -e ^tcp -e ^udp |wc -l ) -ge 3333 ]] ) ;do 
                 ( 
-                LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  |grep -v "remote_address"|grep -v rx_queue |grep -v 127.0.0.1|wc -l )
+                LBCONN=$(docker exec tlb  cat /proc/net/tcp /proc/net/tcp6 /proc/net/udp /proc/net/udp6  2>/dev/null |grep -v "remote_address"|grep -v rx_queue |grep -v 127.0.0.1|wc -l )
                 #echo "LB:CONN: $LBCONN"
                 export INFLUX_MEASUREMENT=netstat_connections;                                               sudo netstat -puteen 2>/dev/null |wc -l | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}    & 
                 export INFLUX_MEASUREMENT=netstat_connections;                                                                       echo "$LBCONN"  | bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE netstat_connections "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}-LB &
