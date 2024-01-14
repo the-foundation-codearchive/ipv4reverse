@@ -312,9 +312,10 @@ jobs:
           remaining=$((20235-$(($(date +%s)-$(cat /tmp/.buildstart)))))
           echo "remaining time(s): "$remaining
           #while [[ $(($(date +%s)-$(cat /tmp/.buildstart))) -le 21000 ]] ;do 
-          for rounds in seq 1 $(($remaining/30));do 
+          for rounds in $(seq 1 $(($remaining/30)) );do 
              remaining=$((20235-$(($(date +%s)-$(cat /tmp/.buildstart)))))
-             echo "remaining time(s): "$remaining" | "$(test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) )
+             echo "remaining time(s): "$remaining" | "$(test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ) )
+             sleep 30
           done      
           echo finished waiting
           echo "-11"|bash /tmp/bash-logger/log-to-influxdb2.sh "${{ secrets.LOGTOINFLUXURL }}" buildstatus "${{ secrets.LOGTOINFLUXORG }}" FALSE buildtime "${{ secrets.LOGTOINFLUXTOKEN }}" ${{ github.repository_owner }}_${{ github.event.repository.name }}_$(echo ${{ github.job }}|sed 's/build-//g;s/build_matrix-//g')${{ matrix.oone }}
