@@ -11,75 +11,75 @@ on:
   schedule:
     - cron: '0 0 1 * *'
 jobs:
-  premerge:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v3
-        with:
-          ref: 'pages'
-          fetch-depth: '0'
-      - name: INIT Request Automerge
-        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
-        env:
-            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
-#            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
-            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: DONE pre-merge
-        run: echo DONE pre-merge
-  preclean:
-    needs: premerge
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v3
-        with:
-          ref: 'pages'
-          fetch-depth: '0'
-      - name: PRE Pull Request autoclean
-        run: |
-          git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
-          git checkout pages
-          tar czf /tmp/keep.tgz $(ls -1 README.md index.html ;test -e lists && echo lists) || true
-          echo "prune pages (temp)"
-          git checkout -b tmp-pages pages
-          git branch -D pages
-          echo orphan
-          git switch --orphan pages
-
-          echo reset
-          git reset --hard
-          echo emptycommit
-          git commit --allow-empty -m "init"
-
-          echo add
-          echo hi > .init-empty-file
-          test -e /tmp/keep.tgz && tar xzf /tmp/keep.tgz || true 
-          find lists/ -empty -delete||true  ;
-          git add -A|| true
-          echo commit
-          git commit -m "init"
-          echo push
-          git push origin pages --force
-          #git checkout -b old_pages pages
-          #git branch -D pages
-          #git checkout --orphan pages
-          #git reset --hard
-          #git commit --allow-empty -m "Initial commit"
-          #git push origin pages:pages --force-with-lease
-          #git checkout old_pages
-          #git rebase origin/pages
-          #git push origin my-feature-1:my-feature-1 --force-with-lease
-
-          #bash -c "git switch pages;git reset --soft $(git merge-base pages HEAD)";
-          #git commit -m "one commit on yourBranch" || true ;
-          #git add -A
-          #git push --force || true 
-      - name: DONE pre-clean
-        run: echo DONE pre-clean
+#  premerge:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout the repo
+#        uses: actions/checkout@v3
+#        with:
+#          ref: 'pages'
+#          fetch-depth: '0'
+#      - name: INIT Request Automerge
+#        run: export GITHUB_TOKEN=$MERGERS_TOKEN && echo "OPEN PReqs:" && gh pr list --limit 333 && gh pr list --limit 333 |grep mybranch_to_merge|cut  -f1 | while read a ;do echo "CLOSING $a";res=$(gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;echo "$res";echo "$res"|grep -i "rate limit" && (echo "RATE LIMIT..42s" ;sleep 61 ;export GITHUB_TOKEN=$PULLREQ_TOKEN gh pr merge --delete-branch --squash --auto "$a" 2>&1 || true  ) ;sleep 3;done|| true 
+#        env:
+#            PULLREQ_TOKEN: ${{ secrets.PULL_REQ_TOKEN }}
+##            MERGERS_TOKEN: ${{ secrets.MERGE_REQ_TOKEN }}
+#            MERGERS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: DONE pre-merge
+#        run: echo DONE pre-merge
+#  preclean:
+#    needs: premerge
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout the repo
+#        uses: actions/checkout@v3
+#        with:
+#          ref: 'pages'
+#          fetch-depth: '0'
+#      - name: PRE Pull Request autoclean
+#        run: |
+#          git config --global user.email "actions@github.com" && git config --global user.name "you@example.com"
+#          git checkout pages
+#          tar czf /tmp/keep.tgz $(ls -1 README.md index.html ;test -e lists && echo lists) || true
+#          echo "prune pages (temp)"
+#          git checkout -b tmp-pages pages
+#          git branch -D pages
+#          echo orphan
+#          git switch --orphan pages
+#
+#          echo reset
+#          git reset --hard
+#          echo emptycommit
+#          git commit --allow-empty -m "init"
+#
+#          echo add
+#          echo hi > .init-empty-file
+#          test -e /tmp/keep.tgz && tar xzf /tmp/keep.tgz || true 
+#          find lists/ -empty -delete||true  ;
+#          git add -A|| true
+#          echo commit
+#          git commit -m "init"
+#          echo push
+#          git push origin pages --force
+#          #git checkout -b old_pages pages
+#          #git branch -D pages
+#          #git checkout --orphan pages
+#          #git reset --hard
+#          #git commit --allow-empty -m "Initial commit"
+#          #git push origin pages:pages --force-with-lease
+#          #git checkout old_pages
+#          #git rebase origin/pages
+#          #git push origin my-feature-1:my-feature-1 --force-with-lease
+#
+#          #bash -c "git switch pages;git reset --soft $(git merge-base pages HEAD)";
+#          #git commit -m "one commit on yourBranch" || true ;
+#          #git add -A
+#          #git push --force || true 
+#      - name: DONE pre-clean
+#        run: echo DONE pre-clean
  
   generate:
-    needs: preclean
+#    needs: preclean
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 48
