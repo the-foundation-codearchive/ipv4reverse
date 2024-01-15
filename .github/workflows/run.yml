@@ -156,11 +156,11 @@ jobs:
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=sys_build&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
 
-          echo "getting cache"
+          echo -n "getting cache elements..count: "
           echo '<?xml version="1.0"?>
           <a:propfind xmlns:a="DAV:">
           <a:prop><a:resourcetype/></a:prop>
-          </a:propfind>'|curl -i -X PROPFIND -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/" --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' > /tmp/.list.netdrive
+          </a:propfind>'|curl -i -X PROPFIND -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/" --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' |tee  /tmp/.list.netdrive|wc -l 
           docker run -e TORCOUNT=14 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
 
 
