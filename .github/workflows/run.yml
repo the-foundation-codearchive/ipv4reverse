@@ -182,7 +182,7 @@ jobs:
           while (test -e  /dev/shm/.process_running );do  sleep 23;
                 docker exec tlb ash /newip.sh &>/dev/null || true 
               done &          
-          docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1 > /tmp/cchangeip
+          docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1 > /tmp/.changeip
           changeip=$( cat /tmp/.changeip )
           [[ -z "$changeip" ]] || sed 's/127.0.0.1/'$changeip'/g' -i /etc/proxychains.conf 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
