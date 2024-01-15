@@ -184,7 +184,7 @@ jobs:
               done &          
           docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1 > /tmp/.changeip
           changeip=$( cat /tmp/.changeip )
-          [[ -z "$changeip" ]] || sed 's/127.0.0.1/'$changeip'/g' -i /etc/proxychains.conf 
+          [[ -z "$changeip" ]] || sudo sed 's/127.0.0.1/'$changeip'/g' -i /etc/proxychains.conf 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
           echo "export API_LIMIT_HELPER_SECRET=${{ secrets.API_LIMIT_HELPER_SECRET }}"   >>/dev/shm/.tokenv
