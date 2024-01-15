@@ -13,7 +13,6 @@ echo "IyBjb2Rpbmc9dXRmOAojIHRoZSBhYm92ZSB0YWcgZGVmaW5lcyBlbmNvZGluZyBmb3IgdGhpcy
 #for octet_two in 0 $(seq 1 254);do 
 #octet_two
 echo "#######################################"
-echo "running FOR ${octet_one}/${octet_two} IN ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}"
 ERRFILT=" -e ERROR_1 -e ERROR_2 -e ERROR_3 -e ERROR_4 -e ERROR_5"
 for octet_three in 0 $(seq 1 254);do 
 
@@ -49,7 +48,8 @@ python3  /tmp/.privnet.py  ${octet_one}.${octet_two}.${octet_three}.1 |grep Matc
          cd ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}
          do_lookup="yes"
         cat /tmp/.list.netdrive 2>/dev/null | grep -q netinfo/raw/${octet_one}.${octet_two}.${octet_three}.tgz && do_lookup="no"
-         [[ "$do_lookup" = "no" ]] && ( echo skipping ${octet_one}.${octet_two}.${octet_three} .. gz found )
+         [[ "$do_lookup" = "no" ]]  && ( echo "skipping FOR ${octet_one}/${octet_two} IN ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" .. gz found ) &
+         [[ "$do_lookup" = "yes" ]] &&   echo " running FOR ${octet_one}/${octet_two} IN ${startdir}/upload/lists/${octet_one}/${octet_one}.${octet_two}" &
          [[ "$do_lookup" = "yes" ]] && sleep 0.$(($RANDOM%9))
          [[ "$do_lookup" = "yes" ]] && test -e /dev/shm/.process_running && (
             mystart=$(date -u +%s)
