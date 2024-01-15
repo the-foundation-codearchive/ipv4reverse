@@ -117,7 +117,7 @@ jobs:
 #          python-version: "3.8"
       - name: Install dependencies
         run: |
-          (          docker pull ghcr.io/y0l0-os/tor-load-balancer-docker:main 2>&1 |grep -i "ull complet" || true  ) &
+          ( docker pull ghcr.io/y0l0-os/tor-load-balancer-docker:main 2>&1 |grep -i "ull complet" || true  ) &
           (curl https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/inst-gen.sh >/tmp/inst-gen.sh;bash /tmp/inst-gen.sh) &
           curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/gen.sh >/tmp/gen.sh &
           #curl  https://raw.githubusercontent.com/TheFoundation/ipv4reverse/master/act.sh >/tmp/act.sh &
@@ -141,8 +141,15 @@ jobs:
           ###timeout 10 host -t ptr 9.9.9.9.in-addr.arpa 127.0.0.1 || true
           ###timeout 10 host test.command.lan 127.0.0.1 || true  
           ###sudo killall -9 dnsmasq routedns || true
+          (echo -n "getting cache elements..count: "
+          echo '<?xml version="1.0"?>
+          <a:propfind xmlns:a="DAV:">
+          <a:prop><a:resourcetype/></a:prop>
+          </a:propfind>'|curl -i -X PROPFIND -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/" --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' |tee  /tmp/.list.netdrive|wc -l ) | sort
           wait
-
+        env:
+            WEBDAV_TOKEN: ${{ secrets.WEBDAV_TOKEN }}
+            WEBDAV_URL: ${{ secrets.WEBDAV_URL }}
       - name: Run thingy... 
         run: |
           date +%s > /tmp/.buildstart
@@ -156,11 +163,7 @@ jobs:
           (cd;(echo "${{ secrets.LOGTOINFLUXTOKEN }}";echo  ${{ secrets.LOGTOINFLUXURL }}"/api/v2/write?org=${{ secrets.LOGTOINFLUXORG }}&bucket=sys_build&precision=ns";echo TOKEN=true;echo "#PROXYFLUX=socks5h://127.0.0.1:9050" ) | sudo tee /root/.picoinflux.conf >/dev/null ) &
           startdir=$(pwd)
 
-          echo -n "getting cache elements..count: "
-          echo '<?xml version="1.0"?>
-          <a:propfind xmlns:a="DAV:">
-          <a:prop><a:resourcetype/></a:prop>
-          </a:propfind>'|curl -i -X PROPFIND -u $WEBDAV_TOKEN ${WEBDAV_URL}"netinfo/raw/" --upload-file - -H "Depth: 1" -s |grep tgz|grep href|sed 's~<\(\|/\)D:href>~~g' |tee  /tmp/.list.netdrive|wc -l 
+
           docker run -e TORCOUNT=14 -d -p 9050:9050 --name tlb ghcr.io/y0l0-os/tor-load-balancer-docker:main 
 
 
@@ -178,7 +181,9 @@ jobs:
                echo -n "$(uptime) .. CONNs: $(sudo netstat -puteen 2>/dev/null |wc -l ) | LBCONNs: $LBCONN |PROCS:" ;sudo ps -AcF 2>/dev/null |grep -e dns -e python|grep -v grep |wc -l ;done &
           while (test -e  /dev/shm/.process_running );do  sleep 23;
                 docker exec tlb ash /newip.sh &>/dev/null || true 
-              done &          changeip=$((docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1))
+              done &          
+          docker inspect tlb|grep IPAddress|cut -d'"' -f4|grep -v ^$|grep -e ^172  -e "^10\." -e ^192|head -n1 > /tmp/cchangeip
+          changeip=$( cat /tmp/.changeip )
           [[ -z "$changeip" ]] || sed 's/127.0.0.1/'$changeip'/g' -i /etc/proxychains.conf 
           echo "export PULLREQ_TOKEN=${{ secrets.PULL_REQ_TOKEN }}" >/dev/shm/.tokenv
           echo "export MERGERS_TOKEN=${{ secrets.GITHUB_TOKEN }}"   >>/dev/shm/.tokenv
