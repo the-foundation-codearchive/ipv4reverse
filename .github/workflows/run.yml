@@ -314,11 +314,11 @@ jobs:
           ## wait for max 30 min to complete job)
           #for halfminutes in $(seq 1 60);do test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ;sleep 30) ;done &
           #wait for the job  to run for at max 6h
-          remaining=$((20235-$(($(date +%s)-$(cat /tmp/.buildstart)))))
+          remaining=$((20035-$(($(date +%s)-$(cat /tmp/.buildstart)))))
           echo "remaining time(s): "$remaining
           #while [[ $(($(date +%s)-$(cat /tmp/.buildstart))) -le 21000 ]] ;do 
           for rounds in $(seq 1 $(($remaining/30)) );do 
-             remaining=$((20235-$(($(date +%s)-$(cat /tmp/.buildstart)))))
+             remaining=$((20035-$(($(date +%s)-$(cat /tmp/.buildstart)))))
              echo "remaining time(s): "$remaining" | "$(test -e  /dev/shm/.process_running && (  echo waiting for $(jobs|wc -l ) procs ) )
              sleep 30
           done      
